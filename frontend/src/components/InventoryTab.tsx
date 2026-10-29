@@ -247,7 +247,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                         {item.quantityMT} <span className="text-[10px] text-neutral-500 font-normal">MT</span>
                       </div>
                       <div className="text-[10px] text-neutral-400 mt-0.5">
-                        {item.cratesCount.toLocaleString()} crates
+                        {(item.cratesCount ?? 0).toLocaleString()} crates
                       </div>
                     </td>
 

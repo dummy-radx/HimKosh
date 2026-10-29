@@ -121,10 +121,10 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({
                     </div>
                   )}
 
-                  {eq.airFlowCfm && (
+                  {eq.airFlowCfm !== undefined && (
                     <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 flex justify-between">
                       <span className="text-neutral-500 font-semibold">AIRFLOW:</span>
-                      <span className="text-black font-bold">{eq.airFlowCfm.toLocaleString()} CFM</span>
+                      <span className="text-black font-bold">{eq.airFlowCfm?.toLocaleString() ?? 0} CFM</span>
                     </div>
                   )}
 
@@ -140,7 +140,7 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({
                       <Clock className="w-3 h-3 text-neutral-400" /> TOTAL HOURS:
                     </span>
                     <span className="font-bold text-black">
-                      {eq.runHoursTotal.toLocaleString()} hrs
+                      {(eq.runHoursTotal ?? 0).toLocaleString()} hrs
                     </span>
                   </div>
                 </div>
