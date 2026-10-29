@@ -2,12 +2,21 @@ import express from "express";
 import cors from "cors";
 import apiRoutes from "./routes/api.js";
 
+try {
+  if (typeof process.loadEnvFile === "function") {
+    process.loadEnvFile();
+  }
+} catch {
+  // .env file not present or not required in production
+}
+
 const app = express();
 const PORT = process.env.PORT || 5001;
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
 // Middlewares
 app.use(cors({
-  origin: "*",
+  origin: CORS_ORIGIN === "*" ? "*" : CORS_ORIGIN.split(",").map((s) => s.trim()),
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }));
 app.use(express.json());
@@ -25,6 +34,10 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`[ColdStorage Backend] Server running on http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`[ColdStorage Backend] Server running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

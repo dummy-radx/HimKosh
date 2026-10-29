@@ -8,7 +8,12 @@ import {
   AlertItem
 } from "../types";
 
-const API_BASE_URL = "http://localhost:5001/api";
+const rawApiUrl = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
+const API_BASE_URL = rawApiUrl
+  ? (rawApiUrl.replace(/\/+$/, "").endsWith("/api")
+      ? rawApiUrl.replace(/\/+$/, "")
+      : `${rawApiUrl.replace(/\/+$/, "")}/api`)
+  : "http://localhost:5001/api";
 
 export async function fetchOverview(): Promise<FacilityOverview> {
   const res = await fetch(`${API_BASE_URL}/overview`);
