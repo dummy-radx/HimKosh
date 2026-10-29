@@ -56,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </span>
             </div>
             <p className="text-[10px] text-neutral-500 tracking-wider">
-              COLD CHAIN OS // v2.4
+              COLD CHAIN OS
             </p>
           </div>
         </div>

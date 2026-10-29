@@ -15,35 +15,36 @@ It pairs a physics-inspired Node.js simulation engine that streams live telemetr
 
 ## Table of Contents
 
-1. [System Architecture](#-system-architecture)
-2. [Core Modules & UI Views](#-core-modules--ui-views)
-3. [Simulation Engine & Physics Model](#-simulation-engine--physics-model)
-4. [Facility Configuration & Seed Data](#-facility-configuration--seed-data)
-5. [Tech Stack](#-tech-stack)
-6. [Project Structure](#-project-structure)
-7. [Getting Started](#-getting-started)
-8. [API & SSE Reference](#-api--sse-reference)
-9. [Chaos Testing & Fault Simulation Guide](#-chaos-testing--fault-simulation-guide)
+1. [System Architecture](#system-architecture)
+2. [Core Modules & UI Views](#core-modules--ui-views)
+3. [Simulation Engine & Physics Model](#simulation-engine--physics-model)
+4. [Facility Configuration & Seed Data](#facility-configuration--seed-data)
+5. [Tech Stack](#tech-stack)
+6. [Project Structure](#project-structure)
+7. [Getting Started](#getting-started)
+8. [API & SSE Reference](#api--sse-reference)
+9. [Chaos Testing & Fault Simulation Guide](#chaos-testing--fault-simulation-guide)
+10. [License](#license)
 
 ---
 
-## 🏗 System Architecture
+## <a id="system-architecture"></a>🏗 System Architecture
 
 ```mermaid
 flowchart LR
     subgraph Backend["Backend (Node.js + Express 5 :5001)"]
-        Store[("Seed Data Store\n(store.js)")]
-        Sim["ColdStorageSimulator\n2.5s Tick Loop\n(simulator.js)"]
-        API["REST + SSE Router\n(routes/api.js)"]
+        Store[("Seed Data Store<br/>(store.js)")]
+        Sim["ColdStorageSimulator<br/>2.5s Tick Loop<br/>(simulator.js)"]
+        API["REST + SSE Router<br/>(routes/api.js)"]
         Store --> Sim
         Sim <--> API
     end
 
     subgraph Frontend["Frontend (React 19 + Vite + TS :5173)"]
-        Client["API Service & EventSource\n(services/api.ts)"]
-        App["State Orchestrator & Web Audio\n(App.tsx)"]
-        Views["Cockpit Views\n• ChamberCockpit\n• InventoryTab\n• CropsGuidelineTab\n• PowerGridTab\n• EquipmentTab"]
-        Drawers["Overlays\n• SimulationDrawer\n• AlertsModal"]
+        Client["API Service & EventSource<br/>(services/api.ts)"]
+        App["State Orchestrator & Web Audio<br/>(App.tsx)"]
+        Views["Cockpit Views<br/>• ChamberCockpit<br/>• InventoryTab<br/>• CropsGuidelineTab<br/>• PowerGridTab<br/>• EquipmentTab"]
+        Drawers["Overlays<br/>• SimulationDrawer<br/>• AlertsModal"]
         Client -->|SSE Push & Fallback Poll| App
         App --> Views
         App --> Drawers
@@ -51,13 +52,13 @@ flowchart LR
         Drawers -->|Chaos Triggers| Client
     end
 
-    API ===>|"SSE Stream (/api/stream)\nevent: initial | telemetry | alert"| Client
-    Client -->|REST Actions (POST/PUT/GET)| API
+    API ===>|"SSE Stream (/api/stream)<br/>event: initial, telemetry, alert"| Client
+    Client -->|"REST Actions (POST/PUT/GET)"| API
 ```
 
 ---
 
-## 🖥 Core Modules & UI Views
+## <a id="core-modules--ui-views"></a>🖥 Core Modules & UI Views
 
 ### 1. Flagship Chamber Cockpit (`ChamberCockpit.tsx`)
 - **Split-Screen Industrial Console**: Real-time monitoring of all 5 climate chambers (`CH-1` through `CH-5`).
@@ -75,14 +76,14 @@ flowchart LR
 - Displays ideal vs. critical safe temperature bounds, relative humidity windows, maximum ethylene tolerance (ppm), maximum shelf life (days), daily storage tariff per MT, and recommended chamber mapping.
 
 ### 4. Solar-Hybrid Microgrid & Thermal Bank (`PowerGridTab.tsx`)
-- **Rooftop PV & Grid Telemetry**: Tracks real-time solar generation (kW), irradiance (%), facility chill load (kW), net-zero grid export/import, daily solar cost savings (₹), and $\text{CO}_2$ offset (kg).
+- **Rooftop PV & Grid Telemetry**: Tracks real-time solar generation (kW), irradiance (%), facility chill load (kW), net-zero grid export/import, daily USD savings, and CO₂ offset (kg).
 - **LiFePO4 Battery Energy Storage System (BESS)**: Monitors State of Charge (SoC %), kWh reserve, charge/discharge kW flow, and estimated backup runtime hours.
 - **Phase-Change Thermal Ice Bank**: Tracks chilled glycol/ice storage charge (%) and ton-hour discharge rates used to offload compressors during peak tariffs or grid outages.
 - **Interactive Mode Switching**: Switch between `SOLAR_HYBRID`, `BATTERY_BACKUP`, `THERMAL_DISCHARGE`, `GRID_ONLY`, and `GENSET_EMERGENCY`.
 
 ### 5. Equipment Health & Predictive Maintenance (`EquipmentTab.tsx`)
 - Monitors 7 critical industrial assets including **Bitzer Screw Compressors**, **Carlyle Semi-Hermetic Racks**, **Evaporator Fan Arrays**, **Induced-Draft Condenser Towers**, **Cummins 250 kVA Diesel Gensets**, and **SolarEdge Smart Inverters**.
-- Tracks Coefficient of Performance (COP), suction/discharge pressures (PSI), motor vibration ($\text{mm/s}$), oil levels, run-hours since last service, and mineral scale warnings.
+- Tracks Coefficient of Performance (COP), suction/discharge pressures (PSI), motor vibration (mm/s), oil levels, run-hours since last service, and mineral scale warnings.
 - **One-Click Technician Service**: Resets run-hour counters, clears scale warnings, updates maintenance dates, and logs an audit alert.
 
 ### 6. Real-Time Alerting & Web Audio Synthesizer (`AlertsModal.tsx` & `SimulationDrawer.tsx`)
@@ -92,32 +93,32 @@ flowchart LR
 
 ---
 
-## ⚙️ Simulation Engine & Physics Model
+## <a id="simulation-engine--physics-model"></a>⚙️ Simulation Engine & Physics Model
 
-The backend [`ColdStorageSimulator`](file:///Users/ishanroy/Desktop/Cold_Storage/backend/src/simulator.js) runs an autonomous tick loop every **2,500 ms** (`2.5s`) and broadcasts updates to all connected SSE clients:
+The backend [`ColdStorageSimulator`](backend/src/simulator.js) runs an autonomous tick loop every **2,500 ms** (`2.5s`) and broadcasts updates to all connected SSE clients:
 
 1. **Normal Closed-Loop Regulation**:
    - Temperature pulls toward `targetTemp` with proportional convergence plus stochastic sensor micro-drift:
-     $$\Delta T = (T_{\text{target}} - T_{\text{current}}) \times 0.15 + \text{U}(-0.06, +0.06)$$
-   - Relative humidity converges toward `targetHumidity` within $[40\%, 99\%]$ bounds, while ethylene ppm exhibits minor biological respiration drift.
+     $$\Delta T = (T_{\text{target}} - T_{\text{current}}) \times 0.15 + \mathcal{U}(-0.06, +0.06)$$
+   - Relative humidity converges toward `targetHumidity` within [40%, 99%] bounds, while ethylene ppm exhibits minor biological respiration drift.
 2. **Door Open Thermal Infiltration (`doorOpen = true`)**:
-   - Warm external air ($29.5^\circ\text{C}$ ambient) infiltrates the chamber:
+   - Warm external air (29.5°C ambient) infiltrates the chamber:
      $$T_{\text{next}} = T_{\text{current}} + (T_{\text{ambient}} - T_{\text{current}}) \times 0.05$$
-   - Humidity drops by $0.8\%$ per tick (down to $50\%$), and a `WARNING` security alert is immediately emitted.
+   - Humidity drops by 0.8% per tick (down to 50%), and a `WARNING` security alert is immediately emitted.
 3. **Electric Coil Defrost (`defrostActive = true`)**:
-   - Electric coil heaters gently warm the chamber by $+0.2^\circ\text{C}$ per tick up to $T_{\text{target}} + 3.0^\circ\text{C}$.
+   - Electric coil heaters gently warm the chamber by +0.2°C per tick up to $T_{\text{target}} + 3.0^\circ\text{C}$.
 4. **Automated Agronomic Threshold Evaluation**:
    - Compares `currentTemp` against the assigned crop's `maxSafeTemp`, `minSafeTemp`, `idealTempMax`, and `idealTempMin`:
      - `currentTemp > maxSafeTemp` → Status becomes `CRITICAL_HIGH` and auto-dispatches a `CRITICAL` temperature alert.
      - `currentTemp < minSafeTemp` → Status becomes `CRITICAL_LOW` (frost/chill injury risk) and auto-dispatches a `CRITICAL` alert.
-     - Outside ideal window by $> 0.5^\circ\text{C}$ → Status becomes `WARNING`.
+     - Outside ideal window by > 0.5°C → Status becomes `WARNING`.
      - Otherwise → `OPTIMAL`.
 5. **Microgrid Power Balancing**:
    - Dynamically computes net solar surplus/deficit (`solarGenerationKw - facilityLoadKw`), toggles between grid export and import, and adjusts battery SoC (%) or thermal ice bank charge (%) based on the active power mode.
 
 ---
 
-## 🏢 Facility Configuration & Seed Data
+## <a id="facility-configuration--seed-data"></a>🏢 Facility Configuration & Seed Data
 
 ### Cold Chambers (`780 MT` Total Capacity)
 
@@ -133,17 +134,17 @@ The backend [`ColdStorageSimulator`](file:///Users/ishanroy/Desktop/Cold_Storage
 
 | Crop ID | Commodity Name | Ideal Temp | Safe Temp Bounds | Ideal Humidity | Max Ethylene | Max Shelf Life | Tariff / MT / Day |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| `apples` | Apples (Fuji / Royal Gala) | `0.0°C` to `2.5°C` | `-1.5°C` to `4.0°C` | `90% – 95%` | `1.0 ppm` | 180 days | ₹210 |
-| `potatoes` | Potatoes (Table & Seed) | `7.0°C` to `10.0°C` | `4.5°C` to `13.0°C` | `85% – 92%` | `2.0 ppm` | 240 days | ₹150 |
-| `strawberries` | Strawberries & Berries | `-0.5°C` to `1.5°C` | `-1.5°C` to `3.5°C` | `90% – 95%` | `0.5 ppm` | 21 days | ₹380 |
-| `bananas` | Bananas & Tropical Fruit | `12.0°C` to `14.5°C` | `10.5°C` to `16.5°C` | `85% – 90%` | `0.2 ppm` | 45 days | ₹250 |
-| `frozen_poultry` | Frozen Poultry & Meat | `-22.0°C` to `-18.0°C` | `-26.0°C` to `-14.0°C` | `85% – 92%` | `0.0 ppm` | 365 days | ₹420 |
-| `carrots` | Carrots (Crisp Bulk) | `0.0°C` to `1.5°C` | `-1.0°C` to `3.0°C` | `95% – 98%` | `1.0 ppm` | 150 days | ₹170 |
-| `onions` | Dry Onions (Red & White) | `0.0°C` to `2.0°C` | `-1.0°C` to `5.0°C` | `65% – 72%` | `1.5 ppm` | 210 days | ₹160 |
+| `apples` | Apples (Fuji / Royal Gala) | `0.0°C` to `2.5°C` | `-1.5°C` to `4.0°C` | `90% – 95%` | `1.0 ppm` | 180 days | `$210` |
+| `potatoes` | Potatoes (Table & Seed) | `7.0°C` to `10.0°C` | `4.5°C` to `13.0°C` | `85% – 92%` | `2.0 ppm` | 240 days | `$150` |
+| `strawberries` | Strawberries & Berries | `-0.5°C` to `1.5°C` | `-1.5°C` to `3.5°C` | `90% – 95%` | `0.5 ppm` | 21 days | `$380` |
+| `bananas` | Bananas & Tropical Fruit | `12.0°C` to `14.5°C` | `10.5°C` to `16.5°C` | `85% – 90%` | `0.2 ppm` | 45 days | `$250` |
+| `frozen_poultry` | Frozen Poultry & Meat | `-22.0°C` to `-18.0°C` | `-26.0°C` to `-14.0°C` | `85% – 92%` | `0.0 ppm` | 365 days | `$420` |
+| `carrots` | Carrots (Crisp Bulk) | `0.0°C` to `1.5°C` | `-1.0°C` to `3.0°C` | `95% – 98%` | `1.0 ppm` | 150 days | `$170` |
+| `onions` | Dry Onions (Red & White) | `0.0°C` to `2.0°C` | `-1.0°C` to `5.0°C` | `65% – 72%` | `1.5 ppm` | 210 days | `$160` |
 
 ---
 
-## 🛠 Tech Stack
+## <a id="tech-stack"></a>🛠 Tech Stack
 
 - **Frontend (`/frontend`)**
   - **Framework**: React `^19.1.1` + React DOM `^19.1.1`
@@ -161,7 +162,7 @@ The backend [`ColdStorageSimulator`](file:///Users/ishanroy/Desktop/Cold_Storage
 
 ---
 
-## 📂 Project Structure
+## <a id="project-structure"></a>📂 Project Structure
 
 ```text
 Cold_Storage/
@@ -175,7 +176,7 @@ Cold_Storage/
 │       ├── data/
 │       │   └── store.js              # Initial seed data (crops, chambers, 12 lots, 7 equipment units, power, alerts)
 │       └── routes/
-│           └── api.js                # 17 REST endpoints + GET /api/stream SSE endpoint
+│           └── api.js                # 18 REST endpoints + GET /api/stream SSE endpoint
 └── frontend/
     ├── index.html                    # HTML shell
     ├── package.json                  # Frontend scripts & dependencies (React 19, Vite 7, Tailwind 4)
@@ -206,7 +207,7 @@ Cold_Storage/
 
 ---
 
-## 🚀 Getting Started
+## <a id="getting-started"></a>🚀 Getting Started
 
 ### Prerequisites
 - **Node.js** `v18.0.0` or higher (recommended `v20+` for native `node --watch` support)
@@ -261,7 +262,7 @@ npm start
 
 ---
 
-## 📡 API & SSE Reference
+## <a id="api--sse-reference"></a>📡 API & SSE Reference
 
 Base URL: `http://localhost:5001/api`
 
@@ -314,7 +315,7 @@ All REST endpoints return a standardized JSON envelope:
 
 ---
 
-## 🧪 Chaos Testing & Fault Simulation Guide
+## <a id="chaos-testing--fault-simulation-guide"></a>🧪 Chaos Testing & Fault Simulation Guide
 
 You can test the system's real-time resilience either through the **Simulation Drawer** in the UI (click the flask/simulation icon in the left sidebar) or via `curl`:
 
@@ -345,3 +346,9 @@ You can test the system's real-time resilience either through the **Simulation D
    curl -X POST http://localhost:5001/api/chambers/CH-1/reset
    ```
    *Result*: Restores `CH-1` to ideal apple preservation setpoints (`1.25°C`, `92.5% RH`) and automatically resolves active temperature alerts for that chamber.
+
+---
+
+## <a id="license"></a>📄 License
+
+This project is licensed under the [ISC License](backend/package.json).
