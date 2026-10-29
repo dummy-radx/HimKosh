@@ -45,7 +45,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
     intakeDate: new Date().toISOString().split("T")[0],
     expectedExitDate: new Date(Date.now() + 60 * 86400000).toISOString().split("T")[0],
     qualityGrade: "Grade A",
-    dailyRatePerMT: 2.5
+    dailyRatePerMT: 210
   });
 
   const handleCropChange = (cropId: string) => {
@@ -268,10 +268,10 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
 
                     <td className="py-3.5 px-5">
                       <div className="font-bold text-black text-sm">
-                        ${estimatedFee.toFixed(2)}
+                        ₹{estimatedFee.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </div>
                       <div className="text-[9px] text-neutral-400">
-                        ${item.dailyRatePerMT}/MT/day
+                        ₹{item.dailyRatePerMT}/MT/day
                       </div>
                     </td>
 
@@ -452,7 +452,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">RATE ($/MT/DAY)</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">RATE (₹/MT/DAY)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -529,7 +529,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
               <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 space-y-1.5">
                 <div className="flex justify-between text-neutral-600">
                   <span>TARIFF RATE:</span>
-                  <span className="text-black font-bold">${dispatchItem.dailyRatePerMT}/MT/day</span>
+                  <span className="text-black font-bold">₹{dispatchItem.dailyRatePerMT}/MT/day</span>
                 </div>
                 <div className="flex justify-between text-neutral-600">
                   <span>STORAGE DAYS:</span>
@@ -540,7 +540,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                 <div className="flex justify-between text-black font-bold text-sm pt-2 border-t border-neutral-200">
                   <span>TOTAL PAYABLE:</span>
                   <span className="text-emerald-700 text-base font-black">
-                    ${(dispatchItem.finalBillAmount || dispatchItem.storageCostAccrued || 1200).toFixed(2)}
+                    ₹{(dispatchItem.finalBillAmount || dispatchItem.storageCostAccrued || 12000).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
               </div>

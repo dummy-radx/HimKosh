@@ -14,7 +14,7 @@ export const CROP_GUIDELINES = [
     maxEthylenePpm: 1.0,
     maxStorageDays: 180,
     recommendedChamber: "CH-1",
-    storageFeePerTonPerDay: 2.5
+    storageFeePerTonPerDay: 210
   },
   {
     id: "potatoes",
@@ -29,7 +29,7 @@ export const CROP_GUIDELINES = [
     maxEthylenePpm: 2.0,
     maxStorageDays: 240,
     recommendedChamber: "CH-2",
-    storageFeePerTonPerDay: 1.8
+    storageFeePerTonPerDay: 150
   },
   {
     id: "strawberries",
@@ -44,7 +44,7 @@ export const CROP_GUIDELINES = [
     maxEthylenePpm: 0.5,
     maxStorageDays: 21,
     recommendedChamber: "CH-3",
-    storageFeePerTonPerDay: 4.5
+    storageFeePerTonPerDay: 380
   },
   {
     id: "bananas",
@@ -59,7 +59,7 @@ export const CROP_GUIDELINES = [
     maxEthylenePpm: 0.2,
     maxStorageDays: 45,
     recommendedChamber: "CH-4",
-    storageFeePerTonPerDay: 3.0
+    storageFeePerTonPerDay: 250
   },
   {
     id: "frozen_poultry",
@@ -74,7 +74,7 @@ export const CROP_GUIDELINES = [
     maxEthylenePpm: 0.0,
     maxStorageDays: 365,
     recommendedChamber: "CH-5",
-    storageFeePerTonPerDay: 5.0
+    storageFeePerTonPerDay: 420
   },
   {
     id: "carrots",
@@ -89,7 +89,7 @@ export const CROP_GUIDELINES = [
     maxEthylenePpm: 1.0,
     maxStorageDays: 150,
     recommendedChamber: "CH-1",
-    storageFeePerTonPerDay: 2.0
+    storageFeePerTonPerDay: 170
   },
   {
     id: "onions",
@@ -104,7 +104,7 @@ export const CROP_GUIDELINES = [
     maxEthylenePpm: 1.5,
     maxStorageDays: 210,
     recommendedChamber: "CH-1",
-    storageFeePerTonPerDay: 1.9
+    storageFeePerTonPerDay: 160
   }
 ];
 
@@ -250,8 +250,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-01-15",
     qualityGrade: "Grade A",
     status: "Stored",
-    dailyRatePerMT: 2.5,
-    storageCostAccrued: 1487.50
+    dailyRatePerMT: 210,
+    storageCostAccrued: 124950.00
   },
   {
     id: "INV-102",
@@ -269,8 +269,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-02-10",
     qualityGrade: "Grade A+",
     status: "Stored",
-    dailyRatePerMT: 2.5,
-    storageCostAccrued: 1687.50
+    dailyRatePerMT: 210,
+    storageCostAccrued: 141750.00
   },
   {
     id: "INV-103",
@@ -288,8 +288,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-01-30",
     qualityGrade: "Grade A",
     status: "Stored",
-    dailyRatePerMT: 2.5,
-    storageCostAccrued: 990.00
+    dailyRatePerMT: 210,
+    storageCostAccrued: 83160.00
   },
   {
     id: "INV-104",
@@ -307,8 +307,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-03-20",
     qualityGrade: "Grade A",
     status: "Stored",
-    dailyRatePerMT: 1.8,
-    storageCostAccrued: 5184.00
+    dailyRatePerMT: 150,
+    storageCostAccrued: 432000.00
   },
   {
     id: "INV-105",
@@ -326,8 +326,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-04-10",
     qualityGrade: "Grade A+",
     status: "Stored",
-    dailyRatePerMT: 1.8,
-    storageCostAccrued: 4959.00
+    dailyRatePerMT: 150,
+    storageCostAccrued: 413250.00
   },
   {
     id: "INV-106",
@@ -345,8 +345,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-03-15",
     qualityGrade: "Grade B+",
     status: "Stored",
-    dailyRatePerMT: 1.8,
-    storageCostAccrued: 4050.00
+    dailyRatePerMT: 150,
+    storageCostAccrued: 337500.00
   },
   {
     id: "INV-107",
@@ -364,8 +364,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2026-11-08",
     qualityGrade: "Premium",
     status: "Stored",
-    dailyRatePerMT: 4.5,
-    storageCostAccrued: 882.00
+    dailyRatePerMT: 380,
+    storageCostAccrued: 74480.00
   },
   {
     id: "INV-108",
@@ -383,8 +383,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2026-11-10",
     qualityGrade: "Grade A",
     status: "Stored",
-    dailyRatePerMT: 4.5,
-    storageCostAccrued: 675.00
+    dailyRatePerMT: 380,
+    storageCostAccrued: 57000.00
   },
   {
     id: "INV-109",
@@ -402,8 +402,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2026-11-25",
     qualityGrade: "Export Quality",
     status: "Stored",
-    dailyRatePerMT: 3.0,
-    storageCostAccrued: 1755.00
+    dailyRatePerMT: 250,
+    storageCostAccrued: 146250.00
   },
   {
     id: "INV-110",
@@ -421,8 +421,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2026-11-20",
     qualityGrade: "Grade A",
     status: "Stored",
-    dailyRatePerMT: 3.0,
-    storageCostAccrued: 1320.00
+    dailyRatePerMT: 250,
+    storageCostAccrued: 110000.00
   },
   {
     id: "INV-111",
@@ -440,8 +440,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-03-10",
     qualityGrade: "HACCP Certified",
     status: "Stored",
-    dailyRatePerMT: 5.0,
-    storageCostAccrued: 9400.00
+    dailyRatePerMT: 420,
+    storageCostAccrued: 789600.00
   },
   {
     id: "INV-112",
@@ -459,8 +459,8 @@ export const INITIAL_INVENTORY = [
     expectedExitDate: "2027-02-15",
     qualityGrade: "Grade A",
     status: "Stored",
-    dailyRatePerMT: 5.0,
-    storageCostAccrued: 6720.00
+    dailyRatePerMT: 420,
+    storageCostAccrued: 564480.00
   }
 ];
 
@@ -610,7 +610,7 @@ export const INITIAL_POWER_STATE = {
   thermalDischargeRateTonHours: 0.0,
   thermalReserveHours: 14.5,
   
-  estimatedDailySavingsUsd: 142.50,
+  estimatedDailySavingsUsd: 11840.00,
   co2SavedKgToday: 264.2
 };
 

@@ -75,7 +75,7 @@ flowchart LR
 - Displays ideal vs. critical safe temperature bounds, relative humidity windows, maximum ethylene tolerance (ppm), maximum shelf life (days), daily storage tariff per MT, and recommended chamber mapping.
 
 ### 4. Solar-Hybrid Microgrid & Thermal Bank (`PowerGridTab.tsx`)
-- **Rooftop PV & Grid Telemetry**: Tracks real-time solar generation (kW), irradiance (%), facility chill load (kW), net-zero grid export/import, daily USD savings, and $\text{CO}_2$ offset (kg).
+- **Rooftop PV & Grid Telemetry**: Tracks real-time solar generation (kW), irradiance (%), facility chill load (kW), net-zero grid export/import, daily solar cost savings (₹), and $\text{CO}_2$ offset (kg).
 - **LiFePO4 Battery Energy Storage System (BESS)**: Monitors State of Charge (SoC %), kWh reserve, charge/discharge kW flow, and estimated backup runtime hours.
 - **Phase-Change Thermal Ice Bank**: Tracks chilled glycol/ice storage charge (%) and ton-hour discharge rates used to offload compressors during peak tariffs or grid outages.
 - **Interactive Mode Switching**: Switch between `SOLAR_HYBRID`, `BATTERY_BACKUP`, `THERMAL_DISCHARGE`, `GRID_ONLY`, and `GENSET_EMERGENCY`.
@@ -133,13 +133,13 @@ The backend [`ColdStorageSimulator`](file:///Users/ishanroy/Desktop/Cold_Storage
 
 | Crop ID | Commodity Name | Ideal Temp | Safe Temp Bounds | Ideal Humidity | Max Ethylene | Max Shelf Life | Tariff / MT / Day |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| `apples` | Apples (Fuji / Royal Gala) | `0.0°C` to `2.5°C` | `-1.5°C` to `4.0°C` | `90% – 95%` | `1.0 ppm` | 180 days | \$2.50 |
-| `potatoes` | Potatoes (Table & Seed) | `7.0°C` to `10.0°C` | `4.5°C` to `13.0°C` | `85% – 92%` | `2.0 ppm` | 240 days | \$1.80 |
-| `strawberries` | Strawberries & Berries | `-0.5°C` to `1.5°C` | `-1.5°C` to `3.5°C` | `90% – 95%` | `0.5 ppm` | 21 days | \$4.50 |
-| `bananas` | Bananas & Tropical Fruit | `12.0°C` to `14.5°C` | `10.5°C` to `16.5°C` | `85% – 90%` | `0.2 ppm` | 45 days | \$3.00 |
-| `frozen_poultry` | Frozen Poultry & Meat | `-22.0°C` to `-18.0°C` | `-26.0°C` to `-14.0°C` | `85% – 92%` | `0.0 ppm` | 365 days | \$5.00 |
-| `carrots` | Carrots (Crisp Bulk) | `0.0°C` to `1.5°C` | `-1.0°C` to `3.0°C` | `95% – 98%` | `1.0 ppm` | 150 days | \$2.00 |
-| `onions` | Dry Onions (Red & White) | `0.0°C` to `2.0°C` | `-1.0°C` to `5.0°C` | `65% – 72%` | `1.5 ppm` | 210 days | \$1.90 |
+| `apples` | Apples (Fuji / Royal Gala) | `0.0°C` to `2.5°C` | `-1.5°C` to `4.0°C` | `90% – 95%` | `1.0 ppm` | 180 days | ₹210 |
+| `potatoes` | Potatoes (Table & Seed) | `7.0°C` to `10.0°C` | `4.5°C` to `13.0°C` | `85% – 92%` | `2.0 ppm` | 240 days | ₹150 |
+| `strawberries` | Strawberries & Berries | `-0.5°C` to `1.5°C` | `-1.5°C` to `3.5°C` | `90% – 95%` | `0.5 ppm` | 21 days | ₹380 |
+| `bananas` | Bananas & Tropical Fruit | `12.0°C` to `14.5°C` | `10.5°C` to `16.5°C` | `85% – 90%` | `0.2 ppm` | 45 days | ₹250 |
+| `frozen_poultry` | Frozen Poultry & Meat | `-22.0°C` to `-18.0°C` | `-26.0°C` to `-14.0°C` | `85% – 92%` | `0.0 ppm` | 365 days | ₹420 |
+| `carrots` | Carrots (Crisp Bulk) | `0.0°C` to `1.5°C` | `-1.0°C` to `3.0°C` | `95% – 98%` | `1.0 ppm` | 150 days | ₹170 |
+| `onions` | Dry Onions (Red & White) | `0.0°C` to `2.0°C` | `-1.0°C` to `5.0°C` | `65% – 72%` | `1.5 ppm` | 210 days | ₹160 |
 
 ---
 

@@ -116,6 +116,16 @@ export const CropsGuidelineTab: React.FC<CropsGuidelineTabProps> = ({
                       UP TO {crop.maxStorageDays} DAYS
                     </span>
                   </div>
+
+                  {/* Storage Tariff */}
+                  <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
+                    <span className="text-neutral-600 flex items-center gap-1.5 font-medium">
+                      TARIFF:
+                    </span>
+                    <span className="font-bold text-emerald-800">
+                      ₹{crop.storageFeePerTonPerDay}/MT/day
+                    </span>
+                  </div>
                 </div>
               </div>
 

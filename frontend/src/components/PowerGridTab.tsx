@@ -261,7 +261,7 @@ export const PowerGridTab: React.FC<PowerGridTabProps> = ({ power, onSetPowerMod
                   DAILY SOLAR COST SAVINGS
                 </span>
                 <div className="text-2xl font-black font-heading text-emerald-950">
-                  ${power.estimatedDailySavingsUsd.toFixed(2)}
+                  ₹{power.estimatedDailySavingsUsd ? power.estimatedDailySavingsUsd.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00"}
                 </div>
                 <p className="text-[10px] text-neutral-600 mt-1">
                   Replaces grid utility tariffs via rooftop green generation.

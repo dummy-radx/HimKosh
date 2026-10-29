@@ -298,7 +298,7 @@ class ColdStorageSimulator {
       expectedExitDate: item.expectedExitDate || new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
       qualityGrade: item.qualityGrade || "Grade A",
       status: "Stored",
-      dailyRatePerMT: Number(item.dailyRatePerMT) || 2.5,
+      dailyRatePerMT: Number(item.dailyRatePerMT) || 210,
       storageCostAccrued: 0
     };
 
