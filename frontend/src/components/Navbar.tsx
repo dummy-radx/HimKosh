@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="font-heading font-black text-lg tracking-wider text-white">
-                ARCTIC<span className="text-[#22c55e]">.</span>PULSE
+                HIM<span className="text-[#22c55e]">.</span>KOSH
               </span>
               <span className="aww-tag text-[9px] px-2 py-0.5 rounded border border-white/15 bg-white/5 text-neutral-300">
                 INDUSTRIAL OS v2.4

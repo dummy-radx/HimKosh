@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="hidden lg:block">
             <div className="flex items-center gap-1.5">
               <span className="font-heading font-black text-lg tracking-wider text-black">
-                ARCTIC<span className="text-emerald-600">.</span>PULSE
+                HIM<span className="text-emerald-600">.</span>KOSH
               </span>
             </div>
             <p className="text-[10px] text-neutral-500 tracking-wider">
