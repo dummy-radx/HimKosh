@@ -1,4 +1,4 @@
-# ❄️ HimKosh (हिमकोश) — Smart Cold Storage Telemetry & Management System
+# ❄️ Bifrost — Smart Cold Storage Telemetry & Management System
 
 ![Version](https://img.shields.io/badge/version-2.4.0-blue)
 ![React](https://img.shields.io/badge/React-19.1-61DAFB?logo=react&logoColor=black)
@@ -7,7 +7,7 @@
 ![Express](https://img.shields.io/badge/Express-5.3-000000?logo=express&logoColor=white)
 ![SSE](https://img.shields.io/badge/Realtime-Server--Sent_Events-emerald)
 
-**HimKosh** (हिमकोश — *Him* = Cold/Frost, *Kosh* = Vault/Depository) is a full-stack real-time industrial telemetry, farmer lot inventory, microgrid energy, and predictive maintenance platform built for multi-commodity cold-chain logistics hubs (modeled after **HimKosh Agro-Logistics Hub #4** in the *Kashmir-Himachal Agri Corridor*, total capacity **780 MT** across 5 specialized climate vaults).
+**Bifrost** is a full-stack real-time industrial telemetry, farmer lot inventory, microgrid energy, and predictive maintenance platform built for multi-commodity cold-chain logistics hubs (modeled after **Bifrost Agro-Logistics Hub #4** in the *Kashmir-Himachal Agri Corridor*, total capacity **780 MT** across 5 specialized climate vaults).
 
 It pairs a physics-inspired Node.js simulation engine that streams live telemetry over **Server-Sent Events (SSE)** with a high-contrast industrial SCADA/cockpit interface built in React 19 and Tailwind CSS v4.
 
@@ -42,7 +42,7 @@ flowchart LR
 
     subgraph Frontend["Frontend (React 19 + Vite + TS :5173)"]
         Client["API Service & EventSource<br/>(services/api.ts)"]
-        App["State Orchestrator & Web Audio<br/>(App.tsx)"]
+        App["State Orchestrator<br/>(App.tsx)"]
         Views["Cockpit Views<br/>• ChamberCockpit<br/>• InventoryTab<br/>• CropsGuidelineTab<br/>• PowerGridTab<br/>• EquipmentTab"]
         Drawers["Overlays<br/>• SimulationDrawer<br/>• AlertsModal"]
         Client -->|SSE Push & Fallback Poll| App
@@ -86,8 +86,8 @@ flowchart LR
 - Tracks Coefficient of Performance (COP), suction/discharge pressures (PSI), motor vibration (mm/s), oil levels, run-hours since last service, and mineral scale warnings.
 - **One-Click Technician Service**: Resets run-hour counters, clears scale warnings, updates maintenance dates, and logs an audit alert.
 
-### 6. Real-Time Alerting & Web Audio Synthesizer (`AlertsModal.tsx` & `SimulationDrawer.tsx`)
-- **Zero-Dependency Audio Alarms**: Uses the browser's native **Web Audio API** (`AudioContext` sine wave oscillator ramping 880 Hz → 440 Hz) to sound an audible chime whenever a `CRITICAL` alert occurs (can be muted in the sidebar).
+### 6. Real-Time Alerting & Fault Simulation (`AlertsModal.tsx` & `SimulationDrawer.tsx`)
+- **Visual Alerting Engine**: Real-time push badges and toast notifications whenever a `CRITICAL` or `WARNING` condition occurs across the facility.
 - **Incident Lifecycle**: Acknowledge (`acknowledged: true`) or resolve (`resolved: true`) alerts across `TEMPERATURE`, `SECURITY`, `POWER`, and `EQUIPMENT` categories.
 - **Simulation Chaos Drawer**: Dedicated slide-over drawer to trigger fault scenarios (door breaches, thermal spikes, defrost cycles, microgrid outages) from anywhere in the app.
 
@@ -228,7 +228,7 @@ npm run dev
   ```json
   {
     "status": "online",
-    "name": "HimKosh Smart Cold Storage Telemetry API",
+    "name": "Bifrost Smart Cold Storage Telemetry API",
     "version": "2.4.0",
     "time": "2026-10-29T18:07:06.000Z"
   }

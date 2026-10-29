@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { TopHUD } from "./components/TopHUD";
 import { ChamberCockpit } from "./components/ChamberCockpit";
@@ -29,32 +29,7 @@ export function App() {
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [isAlertsOpen, setIsAlertsOpen] = useState<boolean>(false);
   const [isSimDrawerOpen, setIsSimDrawerOpen] = useState<boolean>(false);
-  const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  const prevAlertsCount = useRef<number>(0);
-
-  // Play Web Audio synthetic chime for critical alerts
-  const playAlertChime = () => {
-    if (!audioEnabled) return;
-    try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
-      gain.gain.setValueAtTime(0.2, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.35);
-    } catch (e) {
-      // AudioContext quiet fail
-    }
-  };
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -79,7 +54,6 @@ export function App() {
       setInventory(invData);
       setEquipment(eqData);
       setAlerts(alertsData);
-      prevAlertsCount.current = alertsData.filter(a => !a.resolved).length;
     } catch (err) {
       console.error("Initial data load error:", err);
     }
@@ -96,7 +70,6 @@ export function App() {
       (newAlert) => {
         setAlerts(prev => [newAlert, ...prev]);
         if (newAlert.severity === "CRITICAL") {
-          playAlertChime();
           showToast(`🚨 ${newAlert.title}`);
         }
       }
@@ -113,12 +86,6 @@ export function App() {
         setAlerts(alertsData);
         setInventory(invData);
         setEquipment(eqData);
-
-        const activeAlerts = alertsData.filter(a => !a.resolved);
-        if (activeAlerts.length > prevAlertsCount.current) {
-          playAlertChime();
-        }
-        prevAlertsCount.current = activeAlerts.length;
       } catch (err) {
         // quiet fallback
       }
@@ -128,7 +95,7 @@ export function App() {
       unsubscribe();
       clearInterval(interval);
     };
-  }, [audioEnabled]);
+  }, []);
 
   // Chamber Actions
   const handleToggleDoor = async (chamberId: string) => {
@@ -144,8 +111,7 @@ export function App() {
   const handleSpikeTemp = async (chamberId: string, temp: number) => {
     try {
       await api.triggerTempSpike(chamberId, temp);
-      playAlertChime();
-      showToast(`🔥 Thermal spike triggered in ${chamberId} (+${temp}°C). Threshold alarm sounded.`);
+      showToast(`🔥 Thermal spike triggered in ${chamberId} (+${temp}°C). Threshold alert triggered.`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -275,8 +241,6 @@ export function App() {
         onOpenAlerts={() => setIsAlertsOpen(true)}
         alertsCount={totalAlerts}
         criticalCount={criticalAlerts}
-        audioEnabled={audioEnabled}
-        setAudioEnabled={setAudioEnabled}
       />
 
       {/* 2. Main Stage (HUD + Cockpit Views) */}

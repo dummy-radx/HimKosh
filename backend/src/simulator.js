@@ -374,7 +374,7 @@ class ColdStorageSimulator {
 
     return {
       facility: {
-        name: "HimKosh Agro-Logistics Hub #4",
+        name: "Bifrost Agro-Logistics Hub #4",
         location: "Kashmir-Himachal Agri Corridor",
         lastTelemetrySync: new Date().toISOString(),
         overallHealth: criticalAlertsCount > 0 ? "CRITICAL_ATTENTION" : warningAlertsCount > 0 ? "MONITORING_REQUIRED" : "OPTIMAL"

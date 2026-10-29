@@ -68,7 +68,7 @@ export const SimulationDrawer: React.FC<SimulationDrawerProps> = ({
                 <h4 className="font-bold text-black">CH-1 DOOR BREACH</h4>
               </div>
               <p className="text-[11px] text-neutral-600 mb-3 font-sans">
-                Simulates hatch unsealed. Ambient heat inflates chamber temperature and sounds door alarm.
+                Simulates hatch unsealed. Ambient heat inflates chamber temperature and triggers door breach alert.
               </p>
               <button
                 onClick={() => onToggleDoor("CH-1")}

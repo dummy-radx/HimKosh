@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { 
   Snowflake, 
   Bell, 
-  Volume2, 
-  VolumeX, 
   ShieldCheck, 
   AlertTriangle, 
   SlidersHorizontal,
@@ -16,8 +14,6 @@ interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenAlerts: () => void;
-  audioEnabled: boolean;
-  setAudioEnabled: (enabled: boolean) => void;
   onOpenSimulationDrawer: () => void;
 }
 
@@ -26,8 +22,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   onOpenAlerts,
-  audioEnabled,
-  setAudioEnabled,
   onOpenSimulationDrawer
 }) => {
   const [time, setTime] = useState<string>("");
@@ -57,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <span className="font-heading font-black text-lg tracking-wider text-white">
-                HIM<span className="text-[#22c55e]">.</span>KOSH
+                BI<span className="text-[#22c55e]">.</span>FROST
               </span>
               <span className="aww-tag text-[9px] px-2 py-0.5 rounded border border-white/15 bg-white/5 text-neutral-300">
                 INDUSTRIAL OS v2.4
@@ -109,19 +103,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <SlidersHorizontal className="w-3.5 h-3.5 text-[#eab308]" />
             <span>SIMULATOR</span>
-          </button>
-
-          {/* Audio Chime Toggle */}
-          <button
-            onClick={() => setAudioEnabled(!audioEnabled)}
-            className={`p-2 rounded-lg border transition-all cursor-pointer ${
-              audioEnabled 
-                ? "border-emerald-500/30 bg-emerald-500/10 text-[#22c55e] hover:bg-emerald-500/20" 
-                : "border-white/10 bg-white/5 text-neutral-500 hover:text-white"
-            }`}
-            title={audioEnabled ? "Audio Alarms Enabled" : "Audio Alarms Muted"}
-          >
-            {audioEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
 
           {/* Alerts Counter */}

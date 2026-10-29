@@ -7,8 +7,6 @@ import {
   Sun, 
   Wrench, 
   SlidersHorizontal, 
-  Volume2, 
-  VolumeX, 
   Bell
 } from "lucide-react";
 
@@ -19,8 +17,6 @@ interface SidebarProps {
   onOpenAlerts: () => void;
   alertsCount: number;
   criticalCount: number;
-  audioEnabled: boolean;
-  setAudioEnabled: (enabled: boolean) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -29,9 +25,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenSimulation,
   onOpenAlerts,
   alertsCount,
-  criticalCount,
-  audioEnabled,
-  setAudioEnabled
+  criticalCount
 }) => {
   const navItems = [
     { id: "overview", label: "Cockpit", icon: LayoutGrid, tag: "01" },
@@ -52,7 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="hidden lg:block">
             <div className="flex items-center gap-1.5">
               <span className="font-heading font-black text-lg tracking-wider text-black">
-                HIM<span className="text-emerald-600">.</span>KOSH
+                BI<span className="text-emerald-600">.</span>FROST
               </span>
             </div>
             <p className="text-[10px] text-neutral-500 tracking-wider">
@@ -130,20 +124,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </button>
 
-        {/* Audio Mute & Telemetry Status */}
-        <div className="flex items-center justify-between pt-2 px-1 text-[11px] text-neutral-500">
-          <div className="hidden lg:flex items-center gap-1.5 text-[10px]">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="text-emerald-700 font-bold">ONLINE</span>
-          </div>
-
-          <button
-            onClick={() => setAudioEnabled(!audioEnabled)}
-            className="p-1.5 rounded-lg border border-neutral-200 bg-neutral-50 hover:bg-neutral-100 text-neutral-600 hover:text-black transition-all cursor-pointer ml-auto"
-            title={audioEnabled ? "Alert Audio Active (Click to Mute)" : "Alert Audio Muted"}
-          >
-            {audioEnabled ? <Volume2 className="w-3.5 h-3.5 text-emerald-600" /> : <VolumeX className="w-3.5 h-3.5" />}
-          </button>
+        {/* Telemetry Status */}
+        <div className="flex items-center gap-2 pt-2 px-1 text-[11px] text-neutral-500">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping shrink-0" />
+          <span className="text-emerald-700 font-bold text-[10px] tracking-wider hidden lg:inline">LIVE TELEMETRY</span>
         </div>
       </div>
     </aside>

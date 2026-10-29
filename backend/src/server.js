@@ -37,7 +37,7 @@ app.use("/api", apiRoutes);
 app.get("/", (req, res) => {
   res.json({
     status: "online",
-    name: "HimKosh Smart Cold Storage Telemetry API",
+    name: "Bifrost Smart Cold Storage Telemetry API",
     version: "2.4.0",
     time: new Date().toISOString()
   });
