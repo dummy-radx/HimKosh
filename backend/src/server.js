@@ -12,11 +12,20 @@ try {
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
-// Middlewares
+// CORS - Unconditionally allow all origins & preflight requests
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(cors({
-  origin: CORS_ORIGIN === "*" ? "*" : CORS_ORIGIN.split(",").map((s) => s.trim()),
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }));
 app.use(express.json());
