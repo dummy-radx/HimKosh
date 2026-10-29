@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Navbar } from "./components/Navbar";
-import { OverviewStats } from "./components/OverviewStats";
-import { ChamberCard } from "./components/ChamberCard";
+import { Sidebar } from "./components/Sidebar";
+import { TopHUD } from "./components/TopHUD";
+import { ChamberCockpit } from "./components/ChamberCockpit";
 import { InventoryTab } from "./components/InventoryTab";
 import { CropsGuidelineTab } from "./components/CropsGuidelineTab";
 import { PowerGridTab } from "./components/PowerGridTab";
@@ -43,7 +43,7 @@ export function App() {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
       gain.gain.setValueAtTime(0.2, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
@@ -52,7 +52,7 @@ export function App() {
       osc.start();
       osc.stop(ctx.currentTime + 0.35);
     } catch (e) {
-      // AudioContext may require user interaction
+      // AudioContext quiet fail
     }
   };
 
@@ -102,7 +102,7 @@ export function App() {
       }
     );
 
-    // Fallback polling every 5 seconds to keep alerts and inventory in sync
+    // Fallback polling
     const interval = setInterval(async () => {
       try {
         const [alertsData, invData, eqData] = await Promise.all([
@@ -134,7 +134,7 @@ export function App() {
   const handleToggleDoor = async (chamberId: string) => {
     try {
       const updated = await api.toggleChamberDoor(chamberId);
-      showToast(updated.doorOpen ? `⚠️ ${chamberId} door opened! Thermal breach started.` : `🔒 ${chamberId} door sealed.`);
+      showToast(updated.doorOpen ? `⚠️ ${chamberId} hatch unsealed! Thermal infiltration active.` : `🔒 ${chamberId} hatch sealed.`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -145,7 +145,7 @@ export function App() {
     try {
       await api.triggerTempSpike(chamberId, temp);
       playAlertChime();
-      showToast(`🔥 Temperature spiked in ${chamberId} to ${temp}°C! Crop threshold alarm triggered.`);
+      showToast(`🔥 Thermal spike triggered in ${chamberId} (+${temp}°C). Threshold alarm sounded.`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -165,7 +165,7 @@ export function App() {
   const handleResetChamber = async (chamberId: string) => {
     try {
       await api.resetChamber(chamberId);
-      showToast(`✅ ${chamberId} calibrated and restored to optimal target.`);
+      showToast(`✅ ${chamberId} restored to safe agronomic threshold.`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -175,7 +175,7 @@ export function App() {
   const handleUpdateTarget = async (chamberId: string, temp: number, humidity: number) => {
     try {
       await api.updateChamberTarget(chamberId, temp, humidity);
-      showToast(`⚙️ Setpoints updated for ${chamberId}: ${temp}°C, ${humidity}%`);
+      showToast(`⚙️ Setpoints calibrated for ${chamberId}: ${temp}°C, ${humidity}%`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -186,7 +186,7 @@ export function App() {
   const handleAddInventory = async (item: Partial<InventoryItem>) => {
     try {
       const created = await api.createInventory(item);
-      showToast(`📦 Check-in successful: Lot ${created.lotNumber} (${created.quantityMT} MT)`);
+      showToast(`📦 Intake logged: Lot ${created.lotNumber} (${created.quantityMT} MT)`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -196,7 +196,7 @@ export function App() {
   const handleDispatchInventory = async (id: string) => {
     try {
       const dispatched = await api.dispatchInventory(id);
-      showToast(`🚚 Dispatched Lot ${dispatched.lotNumber}! Space reclaimed.`);
+      showToast(`🚚 Dispatched Lot ${dispatched.lotNumber}! Bay space vacated.`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -207,7 +207,7 @@ export function App() {
   const handleSetPowerMode = async (mode: string) => {
     try {
       await api.updatePowerMode(mode);
-      showToast(`⚡ Microgrid profile switched to: ${mode}`);
+      showToast(`⚡ Microgrid profile shifted to: ${mode}`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -218,7 +218,7 @@ export function App() {
   const handleServiceEquipment = async (id: string) => {
     try {
       await api.serviceEquipment(id);
-      showToast(`🛠️ Service completed and logged for ${id}`);
+      showToast(`🛠️ Service record registered for ${id}`);
       refreshData();
     } catch (e) {
       console.error(e);
@@ -262,113 +262,94 @@ export function App() {
     }
   };
 
+  const totalAlerts = alerts.filter(a => !a.resolved).length;
+  const criticalAlerts = alerts.filter(a => !a.resolved && a.severity === "CRITICAL").length;
+
   return (
-    <div className="min-h-screen bg-[#080d1a] text-slate-100 flex flex-col selection:bg-cyan-500/30 selection:text-white">
-      {/* Top Navbar */}
-      <Navbar
-        overview={overview}
+    <div className="flex h-screen bg-[#f8fafc] bg-grid-pattern text-neutral-900 overflow-hidden select-none selection:bg-black selection:text-white">
+      {/* 1. Sleek Left Control Rail */}
+      <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onOpenSimulation={() => setIsSimDrawerOpen(true)}
         onOpenAlerts={() => setIsAlertsOpen(true)}
+        alertsCount={totalAlerts}
+        criticalCount={criticalAlerts}
         audioEnabled={audioEnabled}
         setAudioEnabled={setAudioEnabled}
-        onOpenSimulationDrawer={() => setIsSimDrawerOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6">
-        {/* KPI Banner shown across top */}
-        {overview && (
-          <OverviewStats
-            overview={overview}
-            onNavigateToTab={(tab) => setActiveTab(tab)}
-          />
-        )}
+      {/* 2. Main Stage (HUD + Cockpit Views) */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Top Status HUD */}
+        <TopHUD
+          overview={overview}
+          onNavigateTab={setActiveTab}
+          onOpenAlerts={() => setIsAlertsOpen(true)}
+        />
 
-        {/* Tab 1: Chambers & Live IoT Telemetry */}
-        {activeTab === "overview" && overview && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div>
-                <h2 className="text-xl font-bold text-white font-heading">
-                  Storage Units & Environmental Control Vaults
-                </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Real-time IoT sensors: temperature, humidity, ethylene gas, compressor telemetry, and capacity.
-                </p>
-              </div>
+        {/* Scrollable Main Cockpit Area */}
+        <main className="flex-1 overflow-y-auto p-5 lg:p-7">
+          {/* Tab 1: Flagship Chamber Cockpit (Split Screen Console) */}
+          {activeTab === "overview" && overview && (
+            <ChamberCockpit
+              chambers={overview.chambers}
+              crops={crops}
+              power={overview.power}
+              alerts={alerts}
+              onToggleDoor={handleToggleDoor}
+              onSpikeTemp={handleSpikeTemp}
+              onTriggerDefrost={handleTriggerDefrost}
+              onResetChamber={handleResetChamber}
+              onUpdateTarget={handleUpdateTarget}
+              onResolveAlert={handleResolveAlert}
+            />
+          )}
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setIsSimDrawerOpen(true)}
-                  className="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1.5"
-                >
-                  <span>Simulate Events</span>
-                </button>
-              </div>
-            </div>
+          {/* Tab 2: Produce Inventory Ledger */}
+          {activeTab === "inventory" && overview && (
+            <InventoryTab
+              inventory={inventory}
+              chambers={overview.chambers}
+              crops={crops}
+              onAddInventory={handleAddInventory}
+              onDispatchInventory={handleDispatchInventory}
+            />
+          )}
 
-            {/* Cold Chambers Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              {overview.chambers.map((chamber) => (
-                <ChamberCard
-                  key={chamber.id}
-                  chamber={chamber}
-                  crops={crops}
-                  onToggleDoor={handleToggleDoor}
-                  onSpikeTemp={handleSpikeTemp}
-                  onTriggerDefrost={handleTriggerDefrost}
-                  onResetChamber={handleResetChamber}
-                  onUpdateTarget={handleUpdateTarget}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          {/* Tab 3: Crop Agronomic Matrix */}
+          {activeTab === "crops" && overview && (
+            <CropsGuidelineTab
+              crops={crops}
+              chambers={overview.chambers}
+              onSelectChamber={(chamberId) => {
+                setActiveTab("overview");
+              }}
+            />
+          )}
 
-        {/* Tab 2: Produce Inventory Tracking */}
-        {activeTab === "inventory" && overview && (
-          <InventoryTab
-            inventory={inventory}
-            chambers={overview.chambers}
-            crops={crops}
-            onAddInventory={handleAddInventory}
-            onDispatchInventory={handleDispatchInventory}
-          />
-        )}
+          {/* Tab 4: Solar Generation & Microgrid (BESS) */}
+          {activeTab === "power" && overview && (
+            <PowerGridTab
+              power={overview.power}
+              onSetPowerMode={handleSetPowerMode}
+            />
+          )}
 
-        {/* Tab 3: Crop Guidelines & Thresholds */}
-        {activeTab === "crops" && overview && (
-          <CropsGuidelineTab
-            crops={crops}
-            chambers={overview.chambers}
-            onSelectChamber={(chamberId) => {
-              setActiveTab("overview");
-            }}
-          />
-        )}
-
-        {/* Tab 4: Solar Generation & Microgrid (BESS) */}
-        {activeTab === "power" && overview && (
-          <PowerGridTab
-            power={overview.power}
-            onSetPowerMode={handleSetPowerMode}
-          />
-        )}
-
-        {/* Tab 5: Equipment Health & Predictive Maintenance */}
-        {activeTab === "equipment" && (
-          <EquipmentTab
-            equipment={equipment}
-            onServiceEquipment={handleServiceEquipment}
-          />
-        )}
-      </main>
+          {/* Tab 5: Equipment Health & Predictive Maintenance */}
+          {activeTab === "equipment" && (
+            <EquipmentTab
+              equipment={equipment}
+              onServiceEquipment={handleServiceEquipment}
+            />
+          )}
+        </main>
+      </div>
 
       {/* Floating Notification Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 max-w-md p-4 rounded-xl bg-slate-900/95 border border-cyan-500/50 text-white text-xs font-medium shadow-2xl shadow-cyan-950/50 backdrop-blur-md flex items-center gap-3 animate-fade-in">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
+        <div className="fixed bottom-6 right-6 z-50 max-w-md p-4 rounded-xl bg-white border border-neutral-300 text-black text-xs font-mono font-bold shadow-xl flex items-center gap-3 animate-fade-in">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}

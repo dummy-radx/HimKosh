@@ -2,16 +2,12 @@ import React, { useState } from "react";
 import { 
   PackagePlus, 
   Search, 
-  FileSpreadsheet, 
   CheckCircle2, 
   Calendar, 
   User, 
-  Phone, 
   MapPin, 
   Truck, 
-  Printer, 
-  BadgeAlert,
-  ArrowRight
+  Printer
 } from "lucide-react";
 import { InventoryItem, Chamber, CropGuideline } from "../types";
 
@@ -36,7 +32,7 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
   const [showAddModal, setShowAddModal] = useState(false);
   const [dispatchItem, setDispatchItem] = useState<InventoryItem | null>(null);
 
-  // Form State for New Intake
+  // Form State
   const [formData, setFormData] = useState({
     farmerName: "",
     farmerPhone: "",
@@ -75,7 +71,6 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
       dailyRatePerMT: Number(formData.dailyRatePerMT)
     });
     setShowAddModal(false);
-    // Reset form
     setFormData({
       farmerName: "",
       farmerPhone: "",
@@ -92,7 +87,6 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
     });
   };
 
-  // Filtered List
   const filteredItems = inventory.filter(item => {
     const matchesSearch = 
       item.farmerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -106,35 +100,36 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
     return matchesSearch && matchesChamber && matchesStatus;
   });
 
-  // Capacity breakdown across chambers
-  const totalCapacity = chambers.reduce((acc, c) => acc + c.capacityMT, 0);
-  const totalUsed = chambers.reduce((acc, c) => acc + c.usedMT, 0);
-
   return (
-    <div className="space-y-6">
-      {/* Top Banner: Storage Capacity & Quick Check-in Button */}
-      <div className="glass-panel rounded-2xl p-6 border border-white/10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+    <div className="space-y-6 font-mono">
+      {/* Top Banner */}
+      <div className="aww-card rounded-2xl p-6 bg-white border border-neutral-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-white font-heading">
-            Agro-Produce Inventory & Pallet Tracking
+          <div className="flex items-center gap-2 mb-1">
+            <span className="aww-tag text-[10px] text-neutral-500 font-bold">
+              LEDGER // 01 · INVENTORY
+            </span>
+          </div>
+          <h2 className="text-2xl font-black text-black font-heading tracking-tight">
+            PRODUCE INVENTORY & BATCH LEDGER
           </h2>
-          <p className="text-sm text-slate-400 mt-1 max-w-2xl">
-            Real-time batch traceability by farmer, crop cultivar, chamber bay, weight, and accrual billing.
+          <p className="text-xs text-neutral-600 mt-1 max-w-xl font-mono">
+            Direct farmer intake traceability, warehouse rack coordinates, weight records, and tariff accruals.
           </p>
 
           {/* Chamber Breakdown Pills */}
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-4 font-mono">
             {chambers.map(ch => {
               const pct = Math.round((ch.usedMT / ch.capacityMT) * 100);
               return (
                 <div 
                   key={ch.id} 
-                  className="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs flex items-center gap-2"
+                  className="px-3 py-1.5 rounded-lg bg-neutral-50 border border-neutral-200 text-xs flex items-center gap-2.5"
                 >
-                  <span className="font-mono text-cyan-400 font-bold">{ch.id}</span>
-                  <span className="text-slate-300">{ch.usedMT} / {ch.capacityMT} MT</span>
+                  <span className="font-bold text-black">{ch.id}</span>
+                  <span className="text-neutral-600">{ch.usedMT}/{ch.capacityMT} MT</span>
                   <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                    pct > 85 ? "bg-amber-500/20 text-amber-300" : "bg-emerald-500/20 text-emerald-300"
+                    pct > 85 ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
                   }`}>
                     {pct}%
                   </span>
@@ -145,13 +140,13 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
         </div>
 
         {/* Action Button */}
-        <div className="flex items-center gap-3">
+        <div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/25 transition-all cursor-pointer hover:scale-[1.02]"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-black hover:bg-neutral-800 text-white font-bold text-xs tracking-wide shadow-md transition-all cursor-pointer hover:scale-[1.02] font-mono"
           >
             <PackagePlus className="w-4 h-4" />
-            <span>Check-In New Produce</span>
+            <span>+ REGISTER NEW INTAKE</span>
           </button>
         </div>
       </div>
@@ -159,22 +154,21 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row items-center gap-3 justify-between">
         <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search farmer, lot #, or crop..."
+            placeholder="Search farmer, lot number, or crop..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-slate-900/80 border border-slate-800 text-slate-200 placeholder-slate-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none"
+            className="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl bg-white border border-neutral-300 text-black placeholder-neutral-400 focus:border-black outline-none font-mono shadow-xs"
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          {/* Chamber Filter */}
+        <div className="flex items-center gap-2 w-full md:w-auto font-mono">
           <select
             value={chamberFilter}
             onChange={e => setChamberFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 focus:border-cyan-500 outline-none cursor-pointer"
+            className="px-3 py-2 text-xs rounded-xl bg-white border border-neutral-300 text-neutral-800 focus:border-black outline-none cursor-pointer shadow-xs"
           >
             <option value="ALL">All Chambers</option>
             {chambers.map(c => (
@@ -182,134 +176,131 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
             ))}
           </select>
 
-          {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 focus:border-cyan-500 outline-none cursor-pointer"
+            className="px-3 py-2 text-xs rounded-xl bg-white border border-neutral-300 text-neutral-800 focus:border-black outline-none cursor-pointer shadow-xs"
           >
             <option value="ALL">All Status</option>
-            <option value="Stored">Stored (Active)</option>
-            <option value="Dispatched">Dispatched (Checked Out)</option>
+            <option value="Stored">Active Stored</option>
+            <option value="Dispatched">Dispatched</option>
           </select>
 
-          <span className="text-xs text-slate-400 whitespace-nowrap ml-2">
-            Showing <strong className="text-white">{filteredItems.length}</strong> lots
+          <span className="text-xs text-neutral-600 whitespace-nowrap ml-2">
+            <strong className="text-black">{filteredItems.length}</strong> BATCHES
           </span>
         </div>
       </div>
 
-      {/* Inventory Table */}
-      <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-xl">
+      {/* Table */}
+      <div className="aww-card rounded-2xl border border-neutral-200 bg-white overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-900/90 border-b border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
-                <th className="py-3.5 px-4">Lot # & Farmer</th>
-                <th className="py-3.5 px-4">Crop & Cultivar</th>
-                <th className="py-3.5 px-4">Chamber / Bay</th>
-                <th className="py-3.5 px-4">Quantity</th>
-                <th className="py-3.5 px-4">Intake Date</th>
-                <th className="py-3.5 px-4">Quality Grade</th>
-                <th className="py-3.5 px-4">Storage Fee</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4 text-right">Actions</th>
+              <tr className="bg-neutral-100/90 border-b border-neutral-200 text-neutral-600 font-mono text-[10px] tracking-wider uppercase font-bold">
+                <th className="py-3.5 px-5">LOT // PRODUCER</th>
+                <th className="py-3.5 px-5">CROP TYPE</th>
+                <th className="py-3.5 px-5">VAULT / BAY</th>
+                <th className="py-3.5 px-5">WEIGHT</th>
+                <th className="py-3.5 px-5">INTAKE DATE</th>
+                <th className="py-3.5 px-5">GRADE</th>
+                <th className="py-3.5 px-5">TARIFF ACCRUED</th>
+                <th className="py-3.5 px-5">STATUS</th>
+                <th className="py-3.5 px-5 text-right">ACTION</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-neutral-100 font-mono">
               {filteredItems.map(item => {
                 const daysInStorage = Math.max(1, Math.round((Date.now() - new Date(item.intakeDate).getTime()) / (1000 * 60 * 60 * 24)));
                 const estimatedFee = item.storageCostAccrued || Math.round(daysInStorage * item.quantityMT * item.dailyRatePerMT * 100) / 100;
 
                 return (
-                  <tr key={item.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3.5 px-4">
-                      <div className="font-mono font-bold text-cyan-400">{item.lotNumber}</div>
-                      <div className="font-medium text-white flex items-center gap-1.5 mt-0.5">
-                        <User className="w-3 h-3 text-slate-400" /> {item.farmerName}
+                  <tr key={item.id} className="hover:bg-neutral-50/80 transition-colors">
+                    <td className="py-3.5 px-5">
+                      <div className="font-bold text-black text-xs">{item.lotNumber}</div>
+                      <div className="text-neutral-700 flex items-center gap-1.5 mt-0.5 text-[11px] font-sans">
+                        <User className="w-3 h-3 text-neutral-400" /> {item.farmerName}
                       </div>
-                      <div className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-2.5 h-2.5 text-slate-500" /> {item.farmerLocation}
-                      </div>
-                    </td>
-
-                    <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-200">{item.cropName}</div>
-                      <div className="text-[11px] text-slate-400 mt-0.5 font-mono">
-                        ID: {item.cropId}
+                      <div className="text-[10px] text-neutral-500 flex items-center gap-1 mt-0.5">
+                        <MapPin className="w-2.5 h-2.5 text-neutral-400" /> {item.farmerLocation}
                       </div>
                     </td>
 
-                    <td className="py-3.5 px-4">
+                    <td className="py-3.5 px-5">
+                      <div className="font-bold text-black">{item.cropName}</div>
+                      <div className="text-[10px] text-neutral-400 mt-0.5">ID: {item.cropId}</div>
+                    </td>
+
+                    <td className="py-3.5 px-5">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono font-semibold text-white px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
+                        <span className="font-bold text-white px-2 py-0.5 rounded bg-black text-[10px]">
                           {item.chamberId}
                         </span>
-                        <span className="text-[11px] text-slate-400 font-mono">
+                        <span className="text-neutral-600 text-[10px]">
                           {item.rackLocation}
                         </span>
                       </div>
                     </td>
 
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-white text-sm">
-                        {item.quantityMT} <span className="text-xs font-normal text-slate-400">MT</span>
+                    <td className="py-3.5 px-5">
+                      <div className="font-bold text-black text-sm">
+                        {item.quantityMT} <span className="text-[10px] text-neutral-500 font-normal">MT</span>
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5 font-mono">
+                      <div className="text-[10px] text-neutral-400 mt-0.5">
                         {item.cratesCount.toLocaleString()} crates
                       </div>
                     </td>
 
-                    <td className="py-3.5 px-4">
-                      <div className="text-slate-300 flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-slate-400" /> {item.intakeDate}
+                    <td className="py-3.5 px-5">
+                      <div className="text-neutral-800 flex items-center gap-1 font-sans">
+                        <Calendar className="w-3 h-3 text-neutral-400" /> {item.intakeDate}
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-[10px] text-neutral-500 mt-0.5">
                         {daysInStorage} days stored
                       </div>
                     </td>
 
-                    <td className="py-3.5 px-4">
-                      <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    <td className="py-3.5 px-5">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold border border-neutral-200 bg-neutral-100 text-neutral-800">
                         {item.qualityGrade}
                       </span>
                     </td>
 
-                    <td className="py-3.5 px-4">
-                      <div className="font-mono font-semibold text-slate-200">
+                    <td className="py-3.5 px-5">
+                      <div className="font-bold text-black text-sm">
                         ${estimatedFee.toFixed(2)}
                       </div>
-                      <div className="text-[10px] text-slate-400">
+                      <div className="text-[9px] text-neutral-400">
                         ${item.dailyRatePerMT}/MT/day
                       </div>
                     </td>
 
-                    <td className="py-3.5 px-4">
+                    <td className="py-3.5 px-5">
                       {item.status === "Stored" ? (
-                        <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 flex items-center gap-1 w-fit">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" /> Stored
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-emerald-200 bg-emerald-50 text-emerald-800 flex items-center gap-1.5 w-fit">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" /> STORED
                         </span>
                       ) : (
-                        <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1 w-fit">
-                          <CheckCircle2 className="w-3 h-3 text-slate-500" /> Dispatched
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold border border-neutral-200 bg-neutral-100 text-neutral-600 flex items-center gap-1.5 w-fit">
+                          <CheckCircle2 className="w-3 h-3 text-neutral-400" /> DISPATCHED
                         </span>
                       )}
                     </td>
 
-                    <td className="py-3.5 px-4 text-right">
+                    <td className="py-3.5 px-5 text-right">
                       {item.status === "Stored" ? (
                         <button
                           onClick={() => setDispatchItem(item)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 hover:border-cyan-500/50 transition-all cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg text-xs font-bold border border-neutral-300 bg-white hover:bg-black hover:text-white text-black transition-all cursor-pointer shadow-2xs"
                         >
-                          Dispatch
+                          DISPATCH
                         </button>
                       ) : (
                         <button
                           onClick={() => setDispatchItem(item)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg text-xs font-medium border border-neutral-200 bg-neutral-50 text-neutral-600 hover:text-black cursor-pointer"
                         >
-                          Invoice
+                          RECEIPT
                         </button>
                       )}
                     </td>
@@ -321,27 +312,22 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
         </div>
       </div>
 
-      {/* Add Produce Intake Modal */}
+      {/* Check-In Produce Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="glass-panel max-w-xl w-full rounded-2xl p-6 border border-white/20 shadow-2xl relative animate-scale-up">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-cyan-500/15 text-cyan-400">
-                  <PackagePlus className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white font-heading">
-                    Check-In Farmer Produce Lot
-                  </h3>
-                  <p className="text-xs text-slate-400">
-                    Register intake, assign chamber rack, and initiate cold chain tracking.
-                  </p>
-                </div>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="aww-card max-w-xl w-full rounded-2xl p-7 bg-white border border-neutral-300 shadow-2xl relative font-mono text-xs">
+            <div className="flex items-center justify-between pb-4 border-b border-neutral-200 mb-5">
+              <div>
+                <h3 className="text-lg font-bold text-black font-heading">
+                  PRODUCE CHECK-IN MANIFEST
+                </h3>
+                <p className="text-[11px] text-neutral-500 mt-0.5">
+                  Allocate chamber storage bay and register official farmer intake.
+                </p>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-slate-400 hover:text-white text-lg font-bold cursor-pointer"
+                className="text-neutral-400 hover:text-black text-base cursor-pointer"
               >
                 ✕
               </button>
@@ -350,50 +336,50 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
             <form onSubmit={handleSubmitAdd} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Farmer / Producer Name</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">PRODUCER / FARMER NAME</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Rameshwar Orchards"
                     value={formData.farmerName}
                     onChange={e => setFormData({ ...formData, farmerName: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Farmer Contact Phone</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">PHONE NUMBER</label>
                   <input
                     type="text"
                     placeholder="+91 98XXX XXXXX"
                     value={formData.farmerPhone}
                     onChange={e => setFormData({ ...formData, farmerPhone: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Farmer Location / District</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">DISTRICT / LOCATION</label>
                   <input
                     type="text"
                     placeholder="e.g. Shimla, HP"
                     value={formData.farmerLocation}
                     onChange={e => setFormData({ ...formData, farmerLocation: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Crop Cultivar</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">CROP CULTIVAR</label>
                   <select
                     value={formData.cropId}
                     onChange={e => handleCropChange(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black cursor-pointer"
                   >
                     {crops.map(c => (
-                      <option key={c.id} value={c.id}>{c.name} ({c.category})</option>
+                      <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
                 </div>
@@ -401,45 +387,45 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Assigned Chamber</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">ASSIGNED VAULT</label>
                   <select
                     value={formData.chamberId}
                     onChange={e => setFormData({ ...formData, chamberId: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400 cursor-pointer font-mono"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black cursor-pointer"
                   >
                     {chambers.map(c => (
-                      <option key={c.id} value={c.id}>{c.id} - {c.name.split("-")[1] || c.name}</option>
+                      <option key={c.id} value={c.id}>{c.id}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Storage Rack / Bay</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">STORAGE BAY</label>
                   <input
                     type="text"
                     value={formData.rackLocation}
                     onChange={e => setFormData({ ...formData, rackLocation: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white font-mono outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Quality Grade</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">GRADE</label>
                   <select
                     value={formData.qualityGrade}
                     onChange={e => setFormData({ ...formData, qualityGrade: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400 cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black cursor-pointer"
                   >
-                    <option value="Grade A+">Grade A+ (Premium Export)</option>
-                    <option value="Grade A">Grade A (Standard Market)</option>
-                    <option value="Grade B">Grade B (Processing Grade)</option>
+                    <option value="Grade A+">Grade A+ (Export)</option>
+                    <option value="Grade A">Grade A (Standard)</option>
+                    <option value="Grade B">Grade B (Processing)</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Quantity (MT)</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">QUANTITY (MT)</label>
                   <input
                     type="number"
                     step="0.5"
@@ -451,67 +437,45 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                       quantityMT: parseFloat(e.target.value) || 0,
                       cratesCount: Math.round((parseFloat(e.target.value) || 0) * 50)
                     })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white font-mono outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Crates / Boxes</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">CRATES COUNT</label>
                   <input
                     type="number"
                     value={formData.cratesCount}
                     onChange={e => setFormData({ ...formData, cratesCount: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white font-mono outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Fee Rate ($/MT/day)</label>
+                  <label className="text-[10px] text-neutral-600 font-bold block mb-1">RATE ($/MT/DAY)</label>
                   <input
                     type="number"
                     step="0.1"
                     value={formData.dailyRatePerMT}
                     onChange={e => setFormData({ ...formData, dailyRatePerMT: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white font-mono outline-none focus:border-cyan-400"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-neutral-300 text-black outline-none focus:border-black"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Intake Date</label>
-                  <input
-                    type="date"
-                    value={formData.intakeDate}
-                    onChange={e => setFormData({ ...formData, intakeDate: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-slate-300 block mb-1">Expected Exit Date</label>
-                  <input
-                    type="date"
-                    value={formData.expectedExitDate}
-                    onChange={e => setFormData({ ...formData, expectedExitDate: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-cyan-400"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-slate-800 flex justify-end gap-3">
+              <div className="pt-4 border-t border-neutral-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-xs font-medium rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                  className="px-4 py-2 rounded-lg border border-neutral-300 text-neutral-600 hover:text-black cursor-pointer font-bold"
                 >
-                  Cancel
+                  CANCEL
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-semibold rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white shadow-md shadow-cyan-600/30 cursor-pointer"
+                  className="px-6 py-2 rounded-lg bg-black text-white font-bold hover:bg-neutral-800 cursor-pointer shadow-md"
                 >
-                  Confirm Produce Intake
+                  CONFIRM INTAKE
                 </button>
               </div>
             </form>
@@ -519,74 +483,63 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
         </div>
       )}
 
-      {/* Dispatch / Checkout Modal & Receipt */}
+      {/* Dispatch Modal / Receipt */}
       {dispatchItem && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="glass-panel max-w-lg w-full rounded-2xl p-6 border border-white/20 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="aww-card max-w-lg w-full rounded-2xl p-6 bg-white border border-neutral-300 shadow-2xl relative font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200 mb-4">
               <div className="flex items-center gap-2">
-                <Truck className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-base font-bold text-white font-heading">
-                  {dispatchItem.status === "Stored" ? "Dispatch & Checkout Lot" : "Official Dispatch Receipt"}
+                <Truck className="w-5 h-5 text-black" />
+                <h3 className="text-base font-bold text-black font-heading">
+                  {dispatchItem.status === "Stored" ? "GATE PASS & DISPATCH CHECKOUT" : "DISPATCH BILLING RECEIPT"}
                 </h3>
               </div>
               <button
                 onClick={() => setDispatchItem(null)}
-                className="text-slate-400 hover:text-white cursor-pointer"
+                className="text-neutral-400 hover:text-black cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <div className="space-y-3 text-xs mb-5">
-              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+            <div className="space-y-3 mb-5">
+              <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Lot Number:</span>
-                  <span className="font-mono font-bold text-cyan-400">{dispatchItem.lotNumber}</span>
+                  <span className="text-neutral-500">BATCH LOT:</span>
+                  <span className="font-bold text-black">{dispatchItem.lotNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Farmer:</span>
-                  <span className="font-semibold text-white">{dispatchItem.farmerName}</span>
+                  <span className="text-neutral-500">FARMER:</span>
+                  <span className="text-black font-medium">{dispatchItem.farmerName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Crop:</span>
-                  <span className="text-slate-200">{dispatchItem.cropName}</span>
+                  <span className="text-neutral-500">CROP:</span>
+                  <span className="text-black">{dispatchItem.cropName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Storage Location:</span>
-                  <span className="font-mono text-slate-200">{dispatchItem.chamberId} (Bay {dispatchItem.rackLocation})</span>
+                  <span className="text-neutral-500">LOCATION:</span>
+                  <span className="text-black">{dispatchItem.chamberId} (Bay {dispatchItem.rackLocation})</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Quantity Discharged:</span>
-                  <span className="font-bold text-white">{dispatchItem.quantityMT} MT ({dispatchItem.cratesCount} crates)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Intake Date:</span>
-                  <span className="text-slate-200">{dispatchItem.intakeDate}</span>
+                  <span className="text-neutral-500">QUANTITY:</span>
+                  <span className="text-black font-bold">{dispatchItem.quantityMT} MT ({dispatchItem.cratesCount} crates)</span>
                 </div>
               </div>
 
-              {/* Billing Computation */}
-              <div className="p-3 rounded-xl bg-cyan-950/30 border border-cyan-800/40 space-y-1.5">
-                <div className="text-xs font-semibold text-cyan-300 mb-1 flex items-center justify-between">
-                  <span>Storage Billing Summary</span>
-                  <span className="text-[10px] text-cyan-400">Rate: ${dispatchItem.dailyRatePerMT}/MT/day</span>
+              <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 space-y-1.5">
+                <div className="flex justify-between text-neutral-600">
+                  <span>TARIFF RATE:</span>
+                  <span className="text-black font-bold">${dispatchItem.dailyRatePerMT}/MT/day</span>
                 </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Days Stored:</span>
-                  <span className="font-mono">
+                <div className="flex justify-between text-neutral-600">
+                  <span>STORAGE DAYS:</span>
+                  <span className="text-black font-bold">
                     {dispatchItem.storageDaysTotal || Math.max(1, Math.round((Date.now() - new Date(dispatchItem.intakeDate).getTime()) / 86400000))} days
                   </span>
                 </div>
-                <div className="flex justify-between text-slate-300">
-                  <span>Cold Storage Tariff:</span>
-                  <span className="font-mono">
-                    ${(dispatchItem.quantityMT * dispatchItem.dailyRatePerMT).toFixed(2)} / day
-                  </span>
-                </div>
-                <div className="flex justify-between text-white font-bold text-sm pt-2 border-t border-cyan-800/60">
-                  <span>Total Payable:</span>
-                  <span className="font-mono text-emerald-400">
+                <div className="flex justify-between text-black font-bold text-sm pt-2 border-t border-neutral-200">
+                  <span>TOTAL PAYABLE:</span>
+                  <span className="text-emerald-700 text-base font-black">
                     ${(dispatchItem.finalBillAmount || dispatchItem.storageCostAccrued || 1200).toFixed(2)}
                   </span>
                 </div>
@@ -597,9 +550,9 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
               <button
                 type="button"
                 onClick={() => setDispatchItem(null)}
-                className="px-4 py-2 text-xs font-medium rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                className="px-4 py-2 rounded-lg border border-neutral-300 text-neutral-600 hover:text-black cursor-pointer font-bold"
               >
-                Close
+                CLOSE
               </button>
               {dispatchItem.status === "Stored" ? (
                 <button
@@ -608,17 +561,17 @@ export const InventoryTab: React.FC<InventoryTabProps> = ({
                     await onDispatchInventory(dispatchItem.id);
                     setDispatchItem(null);
                   }}
-                  className="px-5 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/30 cursor-pointer"
+                  className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-all shadow-xs"
                 >
-                  Approve Dispatch & Free Space
+                  APPROVE DISPATCH & VACATE
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="px-4 py-2 text-xs font-semibold rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-black text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
                 >
-                  <Printer className="w-3.5 h-3.5" /> Print Gate Pass
+                  <Printer className="w-3.5 h-3.5" /> PRINT PASS
                 </button>
               )}
             </div>

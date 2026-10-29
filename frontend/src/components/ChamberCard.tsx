@@ -46,13 +46,13 @@ export const ChamberCard: React.FC<ChamberCardProps> = ({
   const isWarning = chamber.status === "WARNING";
   const isDefrost = chamber.status === "DEFROSTING";
 
-  // Calculate mini sparkline path
+  // Sparkline calculations
   const history = chamber.history || [chamber.currentTemp];
   const minHist = Math.min(...history) - 0.5;
   const maxHist = Math.max(...history) + 0.5;
   const range = maxHist - minHist || 1;
   const svgWidth = 120;
-  const svgHeight = 28;
+  const svgHeight = 24;
 
   const points = history.map((val, index) => {
     const x = (index / (history.length - 1 || 1)) * svgWidth;
@@ -70,194 +70,189 @@ export const ChamberCard: React.FC<ChamberCardProps> = ({
   const occupancyPercent = Math.min(100, Math.round((chamber.usedMT / chamber.capacityMT) * 100));
 
   return (
-    <div className={`glass-panel rounded-2xl p-5 border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+    <div className={`aww-card rounded-2xl p-5.5 flex flex-col justify-between transition-all duration-300 relative ${
       isCritical
-        ? "border-rose-500/80 bg-rose-950/20 shadow-xl shadow-rose-950/40 glow-rose"
+        ? "border-[#eab308] bg-[#0f1115] shadow-xl shadow-yellow-950/20 aww-card-yellow"
         : isWarning
-        ? "border-amber-500/60 bg-amber-950/15 shadow-lg shadow-amber-950/30"
+        ? "border-yellow-500/50 bg-[#0f1115]"
         : isDefrost
-        ? "border-blue-500/60 bg-blue-950/20"
-        : "border-white/10 hover:border-cyan-500/30 hover:shadow-cyan-950/20"
+        ? "border-white/30 bg-[#0f1115]"
+        : "border-white/10 hover:border-white/20"
     }`}>
-      {/* Header Info */}
       <div>
-        <div className="flex items-start justify-between gap-2 mb-3">
+        {/* Vault Header & Monospace ID */}
+        <div className="flex items-start justify-between gap-2 mb-3.5">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-2 py-0.5 rounded-md">
+              <span className="aww-tag text-[10px] font-bold px-2 py-0.5 rounded bg-white text-black">
                 {chamber.id}
               </span>
-              <h3 className="text-base font-bold text-white tracking-wide font-heading">
-                {chamber.name}
+              <h3 className="text-base font-bold text-white font-heading tracking-tight">
+                {chamber.name.replace(/^Chamber \d+ - /, "")}
               </h3>
             </div>
-            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
-              <span>Produce:</span>
-              <span className="text-slate-200 font-medium">{chamber.cropType}</span>
+            <p className="text-xs text-neutral-400 mt-1 flex items-center gap-1.5 font-mono">
+              <span className="text-neutral-500">CROP:</span>
+              <span className="text-white font-medium">{chamber.cropType}</span>
             </p>
           </div>
 
-          {/* Status Badge */}
-          <div className="flex items-center gap-1.5">
+          {/* Minimalist Status Badge */}
+          <div>
             {isCritical ? (
-              <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse">
-                <AlertTriangle className="w-3 h-3" /> Critical Breach
+              <span className="aww-tag text-[10px] font-bold px-2.5 py-1 rounded-full border border-[#eab308] bg-[#eab308]/15 text-[#eab308] animate-pulse flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" /> THRESHOLD BREACH
               </span>
             ) : isWarning ? (
-              <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                <AlertTriangle className="w-3 h-3" /> Temp Drift
+              <span className="aww-tag text-[10px] font-bold px-2.5 py-1 rounded-full border border-yellow-500/40 bg-yellow-500/10 text-yellow-400 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" /> TEMP DRIFT
               </span>
             ) : isDefrost ? (
-              <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40">
-                <Flame className="w-3 h-3" /> Defrost Cycle
+              <span className="aww-tag text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/40 bg-white/10 text-white flex items-center gap-1">
+                <Flame className="w-3 h-3" /> DEFROST ACTIVE
               </span>
             ) : (
-              <span className="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                <CheckCircle2 className="w-3 h-3" /> Optimal
+              <span className="aww-tag text-[10px] font-bold px-2.5 py-1 rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e] flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" /> OPTIMAL
               </span>
             )}
           </div>
         </div>
 
-        {/* Primary Telemetry Gauges (Temperature & Humidity) */}
-        <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800/90 mb-3.5">
+        {/* Telemetry Block */}
+        <div className="grid grid-cols-2 gap-3.5 p-4 rounded-xl bg-[#08090b] border border-white/5 mb-4">
           {/* Temperature */}
           <div className="flex flex-col">
-            <span className="text-[11px] font-semibold text-slate-400 flex items-center justify-between">
+            <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400">
               <span className="flex items-center gap-1">
-                <Thermometer className="w-3.5 h-3.5 text-cyan-400" /> Temperature
+                <Thermometer className="w-3.5 h-3.5 text-white" /> TEMP
               </span>
-              <span className="font-mono text-[10px] text-slate-500">
-                Set: {chamber.targetTemp}°C
+              <span className="text-neutral-500 text-[10px]">
+                SET {chamber.targetTemp}°C
               </span>
-            </span>
+            </div>
 
-            <div className="flex items-baseline gap-1.5 mt-1">
-              <span className={`text-3xl font-extrabold font-mono tracking-tight ${
-                isCritical ? "text-rose-400" : isWarning ? "text-amber-400" : "text-white"
+            <div className="flex items-baseline gap-1 mt-1.5">
+              <span className={`text-3xl font-black font-mono tracking-tight ${
+                isCritical ? "text-[#eab308]" : isWarning ? "text-yellow-400" : "text-white"
               }`}>
                 {chamber.currentTemp.toFixed(1)}
               </span>
-              <span className="text-sm font-semibold text-slate-400">°C</span>
+              <span className="text-xs font-mono font-medium text-neutral-400">°C</span>
             </div>
 
-            {/* Sparkline */}
-            <div className="mt-1 flex items-center justify-between">
+            {/* Sparkline in monochrome/yellow/green */}
+            <div className="mt-2 flex items-center justify-between">
               <svg width={svgWidth} height={svgHeight} className="overflow-visible">
                 <polyline
                   fill="none"
-                  stroke={isCritical ? "#f43f5e" : isWarning ? "#f59e0b" : "#06b6d4"}
+                  stroke={isCritical ? "#eab308" : isWarning ? "#facc15" : "#22c55e"}
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   points={points}
                 />
               </svg>
-              <span className="text-[10px] text-slate-500 font-mono">20-tick</span>
+              <span className="text-[9px] font-mono text-neutral-500">20t</span>
             </div>
 
-            {/* Crop limit reference */}
             {matchedCrop && (
-              <span className="text-[10px] text-slate-400 mt-1">
-                Safe window: <span className="text-cyan-300">{matchedCrop.idealTempMin}°C to {matchedCrop.idealTempMax}°C</span>
+              <span className="text-[10px] font-mono text-neutral-400 mt-1.5">
+                Safe: <span className="text-white">{matchedCrop.idealTempMin}°C – {matchedCrop.idealTempMax}°C</span>
               </span>
             )}
           </div>
 
-          {/* Humidity & Ethylene */}
-          <div className="flex flex-col border-l border-slate-800 pl-3">
-            <span className="text-[11px] font-semibold text-slate-400 flex items-center justify-between">
+          {/* Humidity & Diagnostics */}
+          <div className="flex flex-col border-l border-white/10 pl-3.5">
+            <div className="flex items-center justify-between text-[11px] font-mono text-neutral-400">
               <span className="flex items-center gap-1">
-                <Droplets className="w-3.5 h-3.5 text-blue-400" /> Humidity
+                <Droplets className="w-3.5 h-3.5 text-white" /> HUMIDITY
               </span>
-              <span className="font-mono text-[10px] text-slate-500">
-                Set: {chamber.targetHumidity}%
+              <span className="text-neutral-500 text-[10px]">
+                SET {chamber.targetHumidity}%
               </span>
-            </span>
-
-            <div className="flex items-baseline gap-1.5 mt-1">
-              <span className="text-3xl font-extrabold font-mono text-white tracking-tight">
-                {chamber.currentHumidity.toFixed(1)}
-              </span>
-              <span className="text-sm font-semibold text-slate-400">%</span>
             </div>
 
-            {/* Ethylene gas ppm */}
-            <div className="mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
-              <span className="text-slate-400 flex items-center gap-1">
-                <Wind className="w-3 h-3 text-purple-400" /> Ethylene:
+            <div className="flex items-baseline gap-1 mt-1.5">
+              <span className="text-3xl font-black font-mono text-white tracking-tight">
+                {chamber.currentHumidity.toFixed(1)}
               </span>
-              <span className="font-mono font-medium text-slate-200">
+              <span className="text-xs font-mono font-medium text-neutral-400">%</span>
+            </div>
+
+            <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono">
+              <span className="text-neutral-400 flex items-center gap-1">
+                <Wind className="w-3 h-3 text-neutral-400" /> ETHYLENE:
+              </span>
+              <span className="text-white font-medium">
                 {chamber.currentEthylene ? `${chamber.currentEthylene.toFixed(2)} ppm` : "N/A"}
               </span>
             </div>
 
-            {/* Door & Compressor Status */}
-            <div className="mt-1 flex items-center justify-between text-[11px]">
-              <span className="text-slate-400 flex items-center gap-1">
-                <Activity className="w-3 h-3 text-teal-400" /> Chiller:
+            <div className="mt-1 flex items-center justify-between text-[10px] font-mono">
+              <span className="text-neutral-400 flex items-center gap-1">
+                <Activity className="w-3 h-3 text-neutral-400" /> CHILLER:
               </span>
-              <span className={`font-medium ${chamber.compressorRunning ? "text-emerald-400" : "text-slate-400"}`}>
-                {chamber.compressorRunning ? "Active Run" : "Idle Cycle"}
+              <span className={chamber.compressorRunning ? "text-[#22c55e] font-semibold" : "text-neutral-500"}>
+                {chamber.compressorRunning ? "RUNNING" : "STANDBY"}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Capacity & Space Indicator */}
-        <div className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/60 mb-3.5">
-          <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="text-slate-300 font-medium flex items-center gap-1">
-              <Layers className="w-3.5 h-3.5 text-cyan-400" /> Storage Capacity:
+        {/* Capacity Indicator */}
+        <div className="p-3.5 rounded-xl bg-[#08090b] border border-white/5 mb-4">
+          <div className="flex items-center justify-between text-xs font-mono mb-2">
+            <span className="text-neutral-300 flex items-center gap-1.5 text-[11px]">
+              <Layers className="w-3.5 h-3.5 text-white" /> CAPACITY USAGE:
             </span>
-            <span className="font-mono text-slate-200 font-semibold">
+            <span className="text-white font-bold text-xs">
               {chamber.usedMT} / {chamber.capacityMT} MT
             </span>
           </div>
 
-          <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-1.5">
+          <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden mb-2">
             <div
               className={`h-full transition-all duration-500 rounded-full ${
-                occupancyPercent > 90
-                  ? "bg-rose-500"
-                  : occupancyPercent > 75
-                  ? "bg-amber-400"
-                  : "bg-gradient-to-r from-cyan-500 to-blue-500"
+                occupancyPercent > 85 ? "bg-[#eab308]" : "bg-white"
               }`}
               style={{ width: `${occupancyPercent}%` }}
             />
           </div>
 
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="text-emerald-400 font-medium">
-              {freeSpaceMT} MT Space Free ({100 - occupancyPercent}%)
+          <div className="flex items-center justify-between text-[10px] font-mono">
+            <span className="text-[#22c55e]">
+              {freeSpaceMT} MT VACANT ({100 - occupancyPercent}%)
             </span>
             <button
               onClick={() => setShowRacks(!showRacks)}
-              className="text-cyan-400 hover:text-cyan-300 text-[11px] underline cursor-pointer"
+              className="text-neutral-400 hover:text-white underline cursor-pointer transition-colors"
             >
-              {showRacks ? "Hide Racks" : "View Racks"}
+              {showRacks ? "HIDE RACKS" : "EXPAND RACKS"}
             </button>
           </div>
 
-          {/* Collapsible Rack Slot Visualizer */}
+          {/* Racks Layout */}
           {showRacks && (
-            <div className="mt-2.5 pt-2.5 border-t border-slate-800/80 grid grid-cols-2 gap-2">
+            <div className="mt-2.5 pt-2.5 border-t border-white/10 grid grid-cols-2 gap-2">
               {chamber.racks.map(rack => (
                 <div
                   key={rack.id}
-                  className={`p-2 rounded-lg text-xs border flex flex-col justify-between ${
+                  className={`p-2 rounded-lg text-xs font-mono border flex flex-col justify-between ${
                     rack.occupied
-                      ? "bg-cyan-950/30 border-cyan-800/50 text-cyan-200"
-                      : "bg-slate-800/30 border-slate-700/40 text-slate-500"
+                      ? "bg-white/5 border-white/15 text-white"
+                      : "bg-transparent border-white/5 text-neutral-600"
                   }`}
                 >
-                  <div className="flex items-center justify-between font-mono font-bold text-[10px]">
+                  <div className="flex items-center justify-between text-[10px] font-bold">
                     <span>{rack.id}</span>
-                    <span>{rack.occupied ? `${rack.weightMT} MT` : "EMPTY"}</span>
+                    <span className={rack.occupied ? "text-[#22c55e]" : ""}>
+                      {rack.occupied ? `${rack.weightMT} MT` : "EMPTY"}
+                    </span>
                   </div>
                   {rack.occupied && (
-                    <div className="text-[10px] text-slate-300 truncate mt-1">
+                    <div className="text-[9px] text-neutral-400 truncate mt-1">
                       {rack.farmer || rack.batchId}
                     </div>
                   )}
@@ -268,109 +263,103 @@ export const ChamberCard: React.FC<ChamberCardProps> = ({
         </div>
       </div>
 
-      {/* Target Setpoint Edit Drawer */}
+      {/* Target Setpoints Drawer */}
       {showSettings && (
-        <form onSubmit={handleSaveSettings} className="p-3 mb-3 rounded-xl bg-slate-900 border border-cyan-500/40 animate-fade-in">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-white">Adjust Chamber Setpoints</span>
+        <form onSubmit={handleSaveSettings} className="p-3 mb-3 rounded-xl bg-black border border-white/20 animate-fade-in font-mono text-xs">
+          <div className="flex items-center justify-between mb-2 pb-1 border-b border-white/10">
+            <span className="text-xs font-bold text-white">CALIBRATE SETPOINTS</span>
             <button
               type="button"
               onClick={() => setShowSettings(false)}
-              className="text-xs text-slate-400 hover:text-white"
+              className="text-neutral-400 hover:text-white"
             >
               ✕
             </button>
           </div>
           <div className="grid grid-cols-2 gap-2 mb-2.5">
             <div>
-              <label className="text-[10px] text-slate-400 block mb-0.5">Target Temp (°C)</label>
+              <label className="text-[10px] text-neutral-400 block mb-0.5">TARGET TEMP (°C)</label>
               <input
                 type="number"
                 step="0.5"
                 value={targetTempInput}
                 onChange={e => setTargetTempInput(e.target.value)}
-                className="w-full px-2 py-1 text-xs rounded bg-slate-800 border border-slate-700 text-white font-mono focus:border-cyan-400 outline-none"
+                className="w-full px-2 py-1 text-xs rounded bg-[#121518] border border-white/15 text-white outline-none focus:border-white"
               />
             </div>
             <div>
-              <label className="text-[10px] text-slate-400 block mb-0.5">Target Humidity (%)</label>
+              <label className="text-[10px] text-neutral-400 block mb-0.5">TARGET HUMIDITY (%)</label>
               <input
                 type="number"
                 step="1"
                 value={targetHumInput}
                 onChange={e => setTargetHumInput(e.target.value)}
-                className="w-full px-2 py-1 text-xs rounded bg-slate-800 border border-slate-700 text-white font-mono focus:border-cyan-400 outline-none"
+                className="w-full px-2 py-1 text-xs rounded bg-[#121518] border border-white/15 text-white outline-none focus:border-white"
               />
             </div>
           </div>
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              className="flex-1 py-1 text-xs font-semibold rounded bg-cyan-600 hover:bg-cyan-500 text-white cursor-pointer"
-            >
-              Apply Changes
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full py-1 text-xs font-bold rounded bg-white hover:bg-neutral-200 text-black cursor-pointer transition-all"
+          >
+            CONFIRM SETPOINTS
+          </button>
         </form>
       )}
 
-      {/* Action / Simulation Toolbar */}
-      <div className="pt-2 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-1.5">
+      {/* Action Toolbar */}
+      <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-1.5 font-mono">
         {/* Toggle Door */}
         <button
           onClick={() => onToggleDoor(chamber.id)}
-          title={chamber.doorOpen ? "Seal Chamber Door" : "Simulate Chamber Door Left Open"}
-          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
             chamber.doorOpen
-              ? "bg-rose-500/20 text-rose-300 border-rose-500/40 hover:bg-rose-500/30 animate-pulse"
-              : "bg-slate-800/60 text-slate-300 border-slate-700/60 hover:bg-slate-800 hover:text-white"
+              ? "bg-[#eab308]/20 border-[#eab308] text-[#eab308] animate-pulse"
+              : "bg-white/5 border-white/10 text-neutral-300 hover:bg-white/10 hover:text-white"
           }`}
         >
-          {chamber.doorOpen ? <DoorOpen className="w-3.5 h-3.5 text-rose-400" /> : <DoorClosed className="w-3.5 h-3.5 text-slate-400" />}
-          <span>{chamber.doorOpen ? "Hatch Ajar" : "Door Sealed"}</span>
+          {chamber.doorOpen ? <DoorOpen className="w-3.5 h-3.5 text-[#eab308]" /> : <DoorClosed className="w-3.5 h-3.5 text-neutral-400" />}
+          <span>{chamber.doorOpen ? "HATCH OPEN" : "SEALED"}</span>
         </button>
 
-        {/* Defrost Button */}
+        {/* Defrost */}
         <button
           onClick={() => onTriggerDefrost(chamber.id)}
-          title="Toggle Electric Coil Defrost"
           className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
             chamber.defrostActive
-              ? "bg-blue-500/20 text-blue-300 border-blue-500/40"
-              : "bg-slate-800/60 text-slate-300 border-slate-700/60 hover:bg-slate-800 hover:text-white"
+              ? "bg-white text-black font-bold"
+              : "bg-white/5 border-white/10 text-neutral-300 hover:bg-white/10 hover:text-white"
           }`}
         >
-          <Flame className="w-3.5 h-3.5 text-blue-400" />
-          <span>Defrost</span>
+          <Flame className="w-3.5 h-3.5" />
+          <span>DEFROST</span>
         </button>
 
         {/* Spike Temp Simulation */}
         <button
-          onClick={() => onSpikeTemp(chamber.id, chamber.currentTemp > 4 ? 15.0 : 6.8)}
-          title="Simulate sudden thermal malfunction / crop threshold breach"
-          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500/20 transition-all cursor-pointer"
+          onClick={() => onSpikeTemp(chamber.id, chamber.currentTemp > 4 ? 14.5 : 6.8)}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-[#eab308]/40 bg-[#eab308]/10 text-[#eab308] hover:bg-[#eab308]/20 transition-all cursor-pointer"
         >
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>Sim Spike</span>
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>SPIKE</span>
         </button>
 
-        {/* Reset / Calibrate */}
+        {/* Reset */}
         {(isCritical || isWarning || chamber.doorOpen || chamber.defrostActive) && (
           <button
             onClick={() => onResetChamber(chamber.id)}
-            title="Calibrate and restore optimal target conditions"
-            className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e] hover:bg-[#22c55e]/20 transition-all cursor-pointer"
           >
-            <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Reset</span>
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>RESET</span>
           </button>
         )}
 
-        {/* Settings Button */}
+        {/* Settings */}
         <button
           onClick={() => setShowSettings(!showSettings)}
-          title="Chamber Setpoints"
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 transition-all cursor-pointer"
+          className="p-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-all cursor-pointer"
+          title="Chamber Settings"
         >
           <Settings2 className="w-3.5 h-3.5" />
         </button>

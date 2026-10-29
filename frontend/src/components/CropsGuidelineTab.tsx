@@ -5,8 +5,6 @@ import {
   Droplets, 
   Wind, 
   Calendar, 
-  DollarSign, 
-  ShieldCheck, 
   AlertTriangle 
 } from "lucide-react";
 import { CropGuideline, Chamber } from "../types";
@@ -23,122 +21,115 @@ export const CropsGuidelineTab: React.FC<CropsGuidelineTabProps> = ({
   onSelectChamber
 }) => {
   return (
-    <div className="space-y-6">
-      {/* Intro Banner */}
-      <div className="glass-panel rounded-2xl p-6 border border-white/10">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2.5 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-            <Leaf className="w-5 h-5" />
+    <div className="space-y-6 font-mono">
+      {/* Intro Header */}
+      <div className="aww-card rounded-2xl p-6 bg-white border border-neutral-200 shadow-sm">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-9 h-9 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-center text-black">
+            <Leaf className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white font-heading">
-              Crop-Specific Temperature & Climate Guidelines
+            <h2 className="text-2xl font-black text-black font-heading tracking-tight">
+              CROP CLIMATE THRESHOLDS & SPECIFICATIONS
             </h2>
-            <p className="text-xs text-slate-400">
-              Science-backed cold chain preservation thresholds. Temperatures deviating beyond safe bounds trigger automated HVAC alarms.
+            <p className="text-xs text-neutral-500 font-mono mt-0.5">
+              Agronomic post-harvest standards. Automated HVAC alerts trigger when vaults drift beyond critical limits.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Guidelines Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {crops.map((crop) => {
-          // Check if any chamber is currently housing this crop
           const activeChambers = chambers.filter(c => c.cropId === crop.id);
 
           return (
             <div 
               key={crop.id}
-              className="glass-panel rounded-2xl p-5 border border-white/10 hover:border-cyan-500/40 transition-all flex flex-col justify-between"
+              className="aww-card rounded-2xl p-5.5 bg-white border border-neutral-200 flex flex-col justify-between shadow-xs hover:shadow-md"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 px-2 py-0.5 rounded-md bg-cyan-950/60 border border-cyan-800/60">
+                    <span className="aww-tag text-[9px] font-bold px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 text-neutral-700">
                       {crop.category}
                     </span>
-                    <h3 className="text-base font-bold text-white mt-1.5 font-heading">
+                    <h3 className="text-base font-bold text-black mt-1.5 font-heading">
                       {crop.name}
                     </h3>
                   </div>
 
-                  <span className="font-mono text-xs font-semibold text-emerald-400 bg-emerald-950/50 px-2 py-1 rounded-lg border border-emerald-800/50">
-                    ${crop.storageFeePerTonPerDay}/MT/day
+                  <span className="font-mono text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    ${crop.storageFeePerTonPerDay}/MT/d
                   </span>
                 </div>
 
-                {/* Ideal Climate Parameters */}
-                <div className="space-y-2.5 my-4 text-xs">
-                  {/* Ideal Temp */}
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
-                    <span className="text-slate-400 flex items-center gap-1.5">
-                      <Thermometer className="w-3.5 h-3.5 text-cyan-400" /> Optimal Temp:
+                {/* Parameters */}
+                <div className="space-y-2 my-4 text-xs font-mono">
+                  {/* Optimal Window */}
+                  <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
+                    <span className="text-neutral-600 flex items-center gap-1.5 font-medium">
+                      <Thermometer className="w-3.5 h-3.5 text-black" /> OPTIMAL TEMP:
                     </span>
-                    <span className="font-mono font-bold text-cyan-300">
-                      {crop.idealTempMin}°C to {crop.idealTempMax}°C
-                    </span>
-                  </div>
-
-                  {/* Critical Safety Limits */}
-                  <div className="p-2.5 rounded-xl bg-rose-950/20 border border-rose-900/40 flex items-center justify-between">
-                    <span className="text-slate-400 flex items-center gap-1.5">
-                      <AlertTriangle className="w-3.5 h-3.5 text-rose-400" /> Threshold Trigger:
-                    </span>
-                    <span className="font-mono font-semibold text-rose-300 text-[11px]">
-                      &gt; {crop.maxSafeTemp}°C or &lt; {crop.minSafeTemp}°C
+                    <span className="font-bold text-emerald-700">
+                      {crop.idealTempMin}°C TO {crop.idealTempMax}°C
                     </span>
                   </div>
 
-                  {/* Humidity Range */}
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
-                    <span className="text-slate-400 flex items-center gap-1.5">
-                      <Droplets className="w-3.5 h-3.5 text-blue-400" /> Target Relative Humidity:
+                  {/* Threshold Breach Warning */}
+                  <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between">
+                    <span className="text-amber-800 flex items-center gap-1.5 text-[11px] font-semibold">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-600" /> CRITICAL TRIGGER:
                     </span>
-                    <span className="font-mono font-bold text-blue-300">
+                    <span className="font-bold text-amber-900 text-[11px]">
+                      &gt; {crop.maxSafeTemp}°C OR &lt; {crop.minSafeTemp}°C
+                    </span>
+                  </div>
+
+                  {/* Humidity */}
+                  <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
+                    <span className="text-neutral-600 flex items-center gap-1.5 font-medium">
+                      <Droplets className="w-3.5 h-3.5 text-black" /> TARGET HUMIDITY:
+                    </span>
+                    <span className="font-bold text-black">
                       {crop.idealHumidityMin}% – {crop.idealHumidityMax}% RH
                     </span>
                   </div>
 
-                  {/* Ethylene Sensitivity */}
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
-                    <span className="text-slate-400 flex items-center gap-1.5">
-                      <Wind className="w-3.5 h-3.5 text-purple-400" /> Max Ethylene Limit:
+                  {/* Ethylene */}
+                  <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
+                    <span className="text-neutral-600 flex items-center gap-1.5 font-medium">
+                      <Wind className="w-3.5 h-3.5 text-black" /> MAX ETHYLENE:
                     </span>
-                    <span className="font-mono font-medium text-purple-300">
+                    <span className="font-bold text-black">
                       &le; {crop.maxEthylenePpm} ppm
                     </span>
                   </div>
 
-                  {/* Max Safe Storage Life */}
-                  <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
-                    <span className="text-slate-400 flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-amber-400" /> Max Storage Duration:
+                  {/* Duration */}
+                  <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
+                    <span className="text-neutral-600 flex items-center gap-1.5 font-medium">
+                      <Calendar className="w-3.5 h-3.5 text-black" /> STORAGE LIFE:
                     </span>
-                    <span className="font-mono font-medium text-amber-300">
-                      Up to {crop.maxStorageDays} days
+                    <span className="font-bold text-black">
+                      UP TO {crop.maxStorageDays} DAYS
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Active Chamber Link */}
-              <div className="pt-3 border-t border-slate-800/80">
+              {/* Assigned Chambers */}
+              <div className="pt-3 border-t border-neutral-100 font-mono text-[11px]">
                 {activeChambers.length > 0 ? (
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-slate-400">
-                      Currently stored in:
-                    </span>
+                    <span className="text-neutral-500">ASSIGNED VAULTS:</span>
                     <div className="flex gap-1.5">
                       {activeChambers.map(ch => (
                         <button
                           key={ch.id}
                           onClick={() => onSelectChamber(ch.id)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold cursor-pointer transition-all ${
-                            ch.status.startsWith("CRITICAL")
-                              ? "bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse"
-                              : "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30"
-                          }`}
+                          className="px-2 py-0.5 rounded text-[10px] font-bold border border-neutral-300 bg-neutral-100 text-black hover:bg-black hover:text-white transition-all cursor-pointer"
                         >
                           {ch.id} ({ch.currentTemp.toFixed(1)}°C)
                         </button>
@@ -146,9 +137,9 @@ export const CropsGuidelineTab: React.FC<CropsGuidelineTabProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>Default Assignment:</span>
-                    <span className="font-mono text-slate-400">{crop.recommendedChamber}</span>
+                  <div className="flex items-center justify-between text-neutral-500">
+                    <span>RECOMMENDED:</span>
+                    <span className="text-black font-bold">{crop.recommendedChamber}</span>
                   </div>
                 )}
               </div>

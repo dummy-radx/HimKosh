@@ -4,10 +4,8 @@ import {
   Sun, 
   BatteryCharging, 
   ThermometerSnowflake, 
-  ShieldAlert, 
-  ArrowUpRight, 
-  TrendingUp,
-  Cpu
+  Cpu,
+  ArrowUpRight
 } from "lucide-react";
 import { FacilityOverview } from "../types";
 
@@ -24,123 +22,117 @@ export const OverviewStats: React.FC<OverviewStatsProps> = ({ overview, onNaviga
     : "0.0";
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
       {/* 1. Storage Capacity Card */}
       <div 
         onClick={() => onNavigateToTab("inventory")}
-        className="glass-panel rounded-2xl p-4.5 border border-white/10 hover:border-cyan-500/40 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+        className="aww-card rounded-2xl p-5 group cursor-pointer relative overflow-hidden"
       >
-        <div className="absolute top-0 right-0 w-28 h-28 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all" />
-        
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Storage Capacity
+          <span className="aww-tag text-[10px] text-neutral-400">
+            METRIC // 01 · CAPACITY
           </span>
-          <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all">
             <Warehouse className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-2xl font-bold text-white font-heading">
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-3xl font-black text-white font-heading tracking-tight">
             {capacity.totalUsedMT}
           </span>
-          <span className="text-xs text-slate-400">
+          <span className="text-sm font-mono text-neutral-400">
             / {capacity.totalCapacityMT} MT
           </span>
-          <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-            {capacity.occupancyPercent}% Occupied
+          <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded border border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e]">
+            {capacity.occupancyPercent}% FULL
           </span>
         </div>
 
-        {/* Custom Progress Bar */}
-        <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-2">
+        {/* Minimalist Gauge */}
+        <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden mb-3">
           <div 
-            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500 rounded-full"
+            className="h-full bg-white transition-all duration-500 rounded-full"
             style={{ width: `${capacity.occupancyPercent}%` }}
           />
         </div>
 
-        <div className="flex items-center justify-between text-[11px] text-slate-400">
-          <span className="text-emerald-400 font-medium">
-            {capacity.availableSpaceMT} MT Available
+        <div className="flex items-center justify-between text-[11px] font-mono">
+          <span className="text-[#22c55e]">
+            {capacity.availableSpaceMT} MT VACANT
           </span>
-          <span className="flex items-center gap-0.5 text-slate-500 group-hover:text-cyan-400 transition-colors">
-            Manage <ArrowUpRight className="w-3 h-3" />
+          <span className="flex items-center gap-0.5 text-neutral-400 group-hover:text-white transition-colors">
+            INVENTORY <ArrowUpRight className="w-3 h-3" />
           </span>
         </div>
       </div>
 
-      {/* 2. Solar & Energy Generation */}
+      {/* 2. Solar & Microgrid */}
       <div 
         onClick={() => onNavigateToTab("power")}
-        className="glass-panel rounded-2xl p-4.5 border border-white/10 hover:border-emerald-500/40 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+        className="aww-card rounded-2xl p-5 group cursor-pointer relative overflow-hidden"
       >
-        <div className="absolute top-0 right-0 w-28 h-28 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all" />
-
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Clean Microgrid
+          <span className="aww-tag text-[10px] text-neutral-400">
+            METRIC // 02 · ENERGY
           </span>
-          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[#eab308] group-hover:bg-[#eab308] group-hover:text-black transition-all">
             <Sun className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-2xl font-bold text-white font-heading">
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-3xl font-black text-white font-heading tracking-tight">
             {power.solarGenerationKw}
           </span>
-          <span className="text-xs text-slate-400">kW Solar</span>
-          <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-            <BatteryCharging className="w-3 h-3" /> {power.batterySocPercent}% BESS
+          <span className="text-sm font-mono text-neutral-400">kW SOLAR</span>
+          <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded border border-[#eab308]/40 bg-[#eab308]/10 text-[#eab308]">
+            {power.batterySocPercent}% BESS
           </span>
         </div>
 
-        <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-2">
+        <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden mb-3">
           <div 
-            className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500 rounded-full"
+            className="h-full bg-[#eab308] transition-all duration-500 rounded-full"
             style={{ width: `${(power.solarGenerationKw / power.solarPeakCapacityKw) * 100}%` }}
           />
         </div>
 
-        <div className="flex items-center justify-between text-[11px] text-slate-400">
-          <span className="text-teal-300">
-            {power.gridExportKw > 0 ? `Exporting +${power.gridExportKw} kW` : `Load: ${power.facilityLoadKw} kW`}
+        <div className="flex items-center justify-between text-[11px] font-mono">
+          <span className="text-[#eab308]">
+            {power.gridExportKw > 0 ? `+${power.gridExportKw} kW EXPORT` : `${power.facilityLoadKw} kW LOAD`}
           </span>
-          <span className="flex items-center gap-0.5 text-slate-500 group-hover:text-emerald-400 transition-colors">
-            Solar Flow <ArrowUpRight className="w-3 h-3" />
+          <span className="flex items-center gap-0.5 text-neutral-400 group-hover:text-white transition-colors">
+            GRID <ArrowUpRight className="w-3 h-3" />
           </span>
         </div>
       </div>
 
-      {/* 3. Cold Storage Chambers Status */}
+      {/* 3. Vault Equilibrium */}
       <div 
         onClick={() => onNavigateToTab("overview")}
-        className="glass-panel rounded-2xl p-4.5 border border-white/10 hover:border-indigo-500/40 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+        className="aww-card rounded-2xl p-5 group cursor-pointer relative overflow-hidden"
       >
-        <div className="absolute top-0 right-0 w-28 h-28 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-all" />
-
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Vault Equilibrium
+          <span className="aww-tag text-[10px] text-neutral-400">
+            METRIC // 03 · VAULTS
           </span>
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 group-hover:scale-110 transition-transform">
+          <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all">
             <ThermometerSnowflake className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-2xl font-bold text-white font-heading">
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-3xl font-black text-white font-heading tracking-tight">
             {chambers.length}
           </span>
-          <span className="text-xs text-slate-400">Chambers Active</span>
-          <span className="ml-auto text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-            Avg {avgTemp}°C
+          <span className="text-sm font-mono text-neutral-400">CHAMBERS</span>
+          <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded border border-white/20 bg-white/10 text-white">
+            AVG {avgTemp}°C
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 mb-2.5">
+        <div className="flex items-center gap-1.5 mb-3">
           {chambers.map((c) => {
             const isCritical = c.status.startsWith("CRITICAL");
             const isWarning = c.status === "WARNING";
@@ -149,79 +141,69 @@ export const OverviewStats: React.FC<OverviewStatsProps> = ({ overview, onNaviga
               <div 
                 key={c.id} 
                 title={`${c.name}: ${c.currentTemp}°C (${c.status})`}
-                className={`flex-1 h-2 rounded-full transition-all ${
+                className={`flex-1 h-1.5 rounded-full transition-all ${
                   isCritical 
-                    ? "bg-rose-500 animate-pulse" 
+                    ? "bg-[#eab308] animate-pulse" 
                     : isWarning 
-                    ? "bg-amber-400" 
+                    ? "bg-yellow-400" 
                     : isDefrost 
-                    ? "bg-blue-400" 
-                    : "bg-emerald-500"
+                    ? "bg-white" 
+                    : "bg-[#22c55e]"
                 }`}
               />
             );
           })}
         </div>
 
-        <div className="flex items-center justify-between text-[11px] text-slate-400">
-          <span>Target drift &lt; 0.3°C</span>
-          <span className="flex items-center gap-0.5 text-slate-500 group-hover:text-indigo-400 transition-colors">
-            Sensors <ArrowUpRight className="w-3 h-3" />
+        <div className="flex items-center justify-between text-[11px] font-mono">
+          <span className="text-neutral-400">TOLERANCE ±0.2°C</span>
+          <span className="flex items-center gap-0.5 text-neutral-400 group-hover:text-white transition-colors">
+            SENSORS <ArrowUpRight className="w-3 h-3" />
           </span>
         </div>
       </div>
 
-      {/* 4. Equipment Health & Alert Center */}
+      {/* 4. Equipment & Diagnostics */}
       <div 
         onClick={() => onNavigateToTab("equipment")}
-        className="glass-panel rounded-2xl p-4.5 border border-white/10 hover:border-amber-500/40 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+        className="aww-card rounded-2xl p-5 group cursor-pointer relative overflow-hidden"
       >
-        <div className="absolute top-0 right-0 w-28 h-28 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all" />
-
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Machinery & Alerts
+          <span className="aww-tag text-[10px] text-neutral-400">
+            METRIC // 04 · MACHINERY
           </span>
-          <div className={`p-2 rounded-xl border group-hover:scale-110 transition-transform ${
-            alertsSummary.critical > 0 
-              ? "bg-rose-500/15 text-rose-400 border-rose-500/30 animate-pulse"
-              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
-          }`}>
-            {alertsSummary.critical > 0 ? <ShieldAlert className="w-4 h-4" /> : <Cpu className="w-4 h-4" />}
+          <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-[#22c55e] group-hover:bg-[#22c55e] group-hover:text-black transition-all">
+            <Cpu className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-2xl font-bold text-white font-heading">
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-3xl font-black text-white font-heading tracking-tight">
             {equipmentSummary.healthyUnits}
           </span>
-          <span className="text-xs text-slate-400">
-            / {equipmentSummary.totalUnits} Units Healthy
+          <span className="text-sm font-mono text-neutral-400">
+            / {equipmentSummary.totalUnits} ACTIVE
           </span>
-          {alertsSummary.totalActive > 0 && (
-            <span className={`ml-auto text-xs font-bold px-2 py-0.5 rounded-full border ${
-              alertsSummary.critical > 0
-                ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                : "bg-amber-500/20 text-amber-300 border-amber-500/40"
-            }`}>
-              {alertsSummary.totalActive} Notice{alertsSummary.totalActive > 1 ? "s" : ""}
-            </span>
-          )}
+          <span className={`ml-auto text-[10px] font-mono px-2 py-0.5 rounded border ${
+            alertsSummary.totalActive > 0 
+              ? "border-[#eab308]/40 bg-[#eab308]/10 text-[#eab308]" 
+              : "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e]"
+          }`}>
+            {alertsSummary.totalActive > 0 ? `${alertsSummary.totalActive} NOTICES` : "NOMINAL"}
+          </span>
         </div>
 
-        <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-2">
+        <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden mb-3">
           <div 
-            className="h-full bg-gradient-to-r from-amber-400 to-emerald-400 transition-all duration-500 rounded-full"
+            className="h-full bg-[#22c55e] transition-all duration-500 rounded-full"
             style={{ width: `${(equipmentSummary.healthyUnits / equipmentSummary.totalUnits) * 100}%` }}
           />
         </div>
 
-        <div className="flex items-center justify-between text-[11px] text-slate-400">
-          <span className={alertsSummary.critical > 0 ? "text-rose-400 font-semibold" : "text-slate-400"}>
-            {alertsSummary.critical > 0 ? "Action Required" : "Bitzer Compressors OK"}
-          </span>
-          <span className="flex items-center gap-0.5 text-slate-500 group-hover:text-amber-400 transition-colors">
-            Diagnostics <ArrowUpRight className="w-3 h-3" />
+        <div className="flex items-center justify-between text-[11px] font-mono">
+          <span className="text-neutral-400">BITZER SCREWS ONLINE</span>
+          <span className="flex items-center gap-0.5 text-neutral-400 group-hover:text-white transition-colors">
+            HEALTH <ArrowUpRight className="w-3 h-3" />
           </span>
         </div>
       </div>
